@@ -8,6 +8,8 @@
 #include "InputDebugger.hpp"
 #include "Transform.hpp"
 
+#include "assimp/Importer.hpp"
+
 void resizeCallback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
 }
@@ -49,6 +51,7 @@ int main() {
 
 	//---BEGIN GAME OBJECTS---
 	UI gui = UI(window);
+	Assimp::Importer importer;
 	
 	//---END GAME OBJECTS---
 
