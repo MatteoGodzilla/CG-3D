@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{057dbae0-b65e-41ee-9b5d-2aa5af2f0d75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{9f28fa19-9f74-48fb-b4af-1db74e60ba79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\External">
+      <UniqueIdentifier>{68110f14-9e36-4562-8245-8bb0e33e56bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\External\ImGui">
+      <UniqueIdentifier>{a6979a29-b132-4931-90ad-f2fbe0229fbd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glad\src\glad.c">
+      <Filter>Source\External</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_draw.cpp">
+      <Filter>Source\External\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_tables.cpp">
+      <Filter>Source\External\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_widgets.cpp">
+      <Filter>Source\External\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui.cpp">
+      <Filter>Source\External\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_demo.cpp">
+      <Filter>Source\External\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\backends\imgui_impl_opengl3.cpp">
+      <Filter>Source\External\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\backends\imgui_impl_glfw.cpp">
+      <Filter>Source\External\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Input.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Transform.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\ErrorCode.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UI.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Transform.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Input.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\InputReceiver.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\InputDebugger.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

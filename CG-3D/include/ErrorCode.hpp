@@ -1,0 +1,17 @@
+#pragma once
+
+namespace Error {
+	//These Correspond to exit codes returned by the program
+	enum ErrorCode {
+		NO_ERROR,
+		GLFW_CANNOT_INIT,
+		GLFW_CANNOT_CREATE_WINDOW,
+		GLAD_CANNOT_LOAD,
+		SHADER_MAKER_COMPILE_ERROR,
+		SHADER_MAKER_LINK_ERROR,
+		SHADER_MAKER_CANNOT_OPEN_FILE,
+		GRAPHIC_OBJECT_NO_VAO,
+		GRAPHIC_OBJECT_NO_PROGRAM,
+		HERMITE_NOT_ENOUGH_POINTS
+	};
+}
