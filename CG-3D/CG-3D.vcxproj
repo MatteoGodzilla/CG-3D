@@ -105,6 +105,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)assimp\build\include;$(SolutionDir)assimp\include;$(SolutionDir)glm;$(SolutionDir)glad\include;$(SolutionDir)glfw\include;$(SolutionDir)imgui;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -141,18 +142,40 @@
     <ClCompile Include="..\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="src\AssimpConverter.cpp" />
     <ClCompile Include="src\Input.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Material.cpp" />
+    <ClCompile Include="src\MeshRenderer.cpp" />
+    <ClCompile Include="src\Object.cpp" />
+    <ClCompile Include="src\Utils.cpp" />
     <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\ErrorCode.hpp" />
+    <ClInclude Include="include\AssimpConverter.hpp" />
+    <ClInclude Include="include\CollisionBox.hpp" />
     <ClInclude Include="include\Input.hpp" />
     <ClInclude Include="include\InputDebugger.hpp" />
     <ClInclude Include="include\InputReceiver.hpp" />
+    <ClInclude Include="include\Light.hpp" />
+    <ClInclude Include="include\Material.hpp" />
+    <ClInclude Include="include\Mesh.hpp" />
+    <ClInclude Include="include\MeshRenderer.hpp" />
+    <ClInclude Include="include\Object.hpp" />
+    <ClInclude Include="include\Utils.hpp" />
     <ClInclude Include="include\Transform.hpp" />
     <ClInclude Include="include\UI.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\BlinnPhong.frag" />
+    <None Include="shaders\BlinnPhong.vert" />
+    <None Include="shaders\Flat.frag" />
+    <None Include="shaders\Flat.vert" />
+    <None Include="shaders\Gourad.frag" />
+    <None Include="shaders\Gourad.vert" />
+    <None Include="shaders\Unlit.frag" />
+    <None Include="shaders\Unlit.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

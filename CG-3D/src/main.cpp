@@ -2,13 +2,13 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "ErrorCode.hpp"
+#include "Utils.hpp"
 #include "UI.hpp"
 #include "Input.hpp"
 #include "InputDebugger.hpp"
 #include "Transform.hpp"
-
-#include "assimp/Importer.hpp"
+#include "Object.hpp"
+#include "AssimpConverter.hpp"
 
 void resizeCallback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
@@ -39,8 +39,6 @@ int main() {
 	glfwSetCursorPosCallback(window, Input::receiveMousePosEvents);
 	glfwSetMouseButtonCallback(window, Input::receiveMouseButtonEvents);
 	Input::init();
-	InputDebugger dbg = InputDebugger();
-	Input::addConsumer(&dbg);
 
 	glfwMakeContextCurrent(window);
 	//Load GLAD (must be done after setting the context) 
@@ -50,9 +48,11 @@ int main() {
 	}
 
 	//---BEGIN GAME OBJECTS---
-	UI gui = UI(window);
-	Assimp::Importer importer;
+	Material::initShaders();
 	
+	Object* teapot = AssimpConverter::loadObject("objs/teapot.obj");
+	
+	UI gui = UI(window);
 	//---END GAME OBJECTS---
 
 	//Enable transparency effects (needed for the background)
@@ -68,13 +68,17 @@ int main() {
 		double nowFrame = glfwGetTime();
 		double deltaTime = nowFrame - lastFrame;
 
+		lastFrame = nowFrame;
 		//---UPDATE GRAPHICS---
+		
 
 		
 		//---RENDERING LOGIC---
 		//clear screen
 		glClearColor(0.0, 0.0, 0.0, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT);
+
+		teapot->render();
 
 		//render gui overlay
 		gui.render(deltaTime);

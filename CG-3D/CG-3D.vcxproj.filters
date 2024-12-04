@@ -13,6 +13,9 @@
     <Filter Include="Source\External\ImGui">
       <UniqueIdentifier>{a6979a29-b132-4931-90ad-f2fbe0229fbd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{9e320498-53db-4e5b-9f14-c3f835abed1d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -51,11 +54,23 @@
     <ClCompile Include="src\Transform.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="src\Utils.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Material.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Object.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MeshRenderer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AssimpConverter.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\ErrorCode.hpp">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="include\UI.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
@@ -71,5 +86,55 @@
     <ClInclude Include="include\InputDebugger.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="include\Mesh.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Light.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Material.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MeshRenderer.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Utils.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Object.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CollisionBox.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AssimpConverter.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\BlinnPhong.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\BlinnPhong.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\Gourad.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\Gourad.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\Unlit.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\Unlit.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\Flat.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\Flat.frag">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
