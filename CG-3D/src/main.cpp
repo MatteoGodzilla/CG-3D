@@ -9,6 +9,7 @@
 #include "Transform.hpp"
 #include "Object.hpp"
 #include "AssimpConverter.hpp"
+#include "Camera.hpp"
 
 void resizeCallback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
@@ -38,6 +39,7 @@ int main() {
 	glfwSetKeyCallback(window, Input::receiveKeyboardEvents);
 	glfwSetCursorPosCallback(window, Input::receiveMousePosEvents);
 	glfwSetMouseButtonCallback(window, Input::receiveMouseButtonEvents);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	Input::init();
 
 	glfwMakeContextCurrent(window);
@@ -50,14 +52,25 @@ int main() {
 	//---BEGIN GAME OBJECTS---
 	Material::initShaders();
 	
+	Camera cam = Camera();
+	Input::addConsumer(&cam);
+
 	Object* teapot = AssimpConverter::loadObject("objs/teapot.obj");
-	
+	Transform t = Transform();
+	t.worldRotation = glm::rotate(teapot->transform.worldRotation, glm::pi<float>() / 2, glm::vec3(0, 1, 0));
+	t.worldScale = glm::vec3(1.0) / 4.0f;
+	t.worldPosition = glm::vec3(0, -1, 0);
+	teapot->setTransform(t);
+
 	UI gui = UI(window);
 	//---END GAME OBJECTS---
 
 	//Enable transparency effects (needed for the background)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	//Enable Depth testing
+	glEnable(GL_DEPTH_TEST);
 
 	//Main loop
 	double lastFrame = glfwGetTime();
@@ -68,15 +81,20 @@ int main() {
 		double nowFrame = glfwGetTime();
 		double deltaTime = nowFrame - lastFrame;
 
+		cam.update(deltaTime);
+
 		lastFrame = nowFrame;
+		//t.worldRotation = glm::rotate(t.worldRotation, (float)(glm::pi<double>() * deltaTime), glm::vec3(1, 1, 1));
+		//teapot->setTransform(t);
+
 		//---UPDATE GRAPHICS---
 		
+		teapot->updateGraphics(&cam);
 
-		
 		//---RENDERING LOGIC---
 		//clear screen
 		glClearColor(0.0, 0.0, 0.0, 1.0);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		teapot->render();
 

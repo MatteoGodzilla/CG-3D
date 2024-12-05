@@ -7,7 +7,11 @@ layout (location = 3) in vec2 uv;
 
 out vec4 col;
 
+uniform mat4 worldMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 projMatrix;
+
 void main(){
-    gl_Position = vec4(position.z, position.y - 1, -position.x, 4.0);
-    col = color;
+    gl_Position = projMatrix * viewMatrix * worldMatrix * vec4(position, 1.0);
+    col = vec4(normal, 1.0);
 }

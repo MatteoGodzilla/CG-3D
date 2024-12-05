@@ -41,12 +41,16 @@ MeshRenderer::MeshRenderer(Mesh* mesh, Material* material) : MeshRenderer() {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->indices.size() * sizeof(unsigned int), mesh->indices.data(), GL_STATIC_DRAW);
 }
 
+void MeshRenderer::updateMaterial(Transform t, Camera* c) {
+	if(material != nullptr)
+		material->updateUniforms(t, c);
+}
+
 void MeshRenderer::render() {
 	if (mesh == nullptr || material == nullptr || VAO == 0)
 		return;
 
 	material->bind();
-	material->updateUniforms();
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
 }

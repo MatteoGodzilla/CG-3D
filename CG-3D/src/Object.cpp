@@ -23,6 +23,23 @@ void Object::addChildren(Object* child) {
 	children.push_back(child);
 }
 
+//force the transform onto the children
+void Object::setTransform(Transform t) {
+	transform = t;
+
+	for (auto* child : children) {
+		child->setTransform(t);
+	}
+}
+
+void Object::updateGraphics(Camera* camera) {
+	meshRenderer.updateMaterial(transform, camera);
+
+	for (auto* child : children) {
+		child->updateGraphics(camera);
+	}
+}
+
 void Object::render() {
 	//first, draw self
 	meshRenderer.render();

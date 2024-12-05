@@ -2,6 +2,7 @@
 #include "Mesh.hpp"
 #include "Material.hpp"
 #include "Transform.hpp"
+#include "Camera.hpp"
 
 //contains the references of the opengl VAO, VBO and EBO
 
@@ -9,6 +10,7 @@ class MeshRenderer {
 public:
 	MeshRenderer();
 	MeshRenderer(Mesh* mesh, Material* material);
+	void updateMaterial(Transform t, Camera* c);
 	void render();
 
 private:

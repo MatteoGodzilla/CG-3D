@@ -30,19 +30,22 @@ void Material::bind() {
 	}
 }
 
-void Material::updateUniforms() {
+void Material::updateUniforms(Transform t, Camera* c) {
 	switch (type) {
 	case UNLIT:
-		//glUseProgram(Material::unlitShaderId);
+		glUseProgram(Material::unlitShaderId);
+		glUniformMatrix4fv(glGetUniformLocation(Material::unlitShaderId, "worldMatrix"), 1, GL_FALSE, glm::value_ptr(t.calculateMatrix()));
+		glUniformMatrix4fv(glGetUniformLocation(Material::unlitShaderId, "viewMatrix"), 1, GL_FALSE, glm::value_ptr(c->getViewMatrix()));
+		glUniformMatrix4fv(glGetUniformLocation(Material::unlitShaderId, "projMatrix"), 1, GL_FALSE, glm::value_ptr(c->getProjMatrix()));
 		break;
 	case FLAT:
-		//glUseProgram(Material::flatShaderId);
+		glUseProgram(Material::flatShaderId);
 		break;
 	case GOURAD:
-		//glUseProgram(Material::gouradShaderId);
+		glUseProgram(Material::gouradShaderId);
 		break;
 	case BLINN_PHONG:
-		//glUseProgram(Material::blinnPhongShaderId);
+		glUseProgram(Material::blinnPhongShaderId);
 		break;
 	}
 }

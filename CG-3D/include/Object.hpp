@@ -4,6 +4,7 @@
 #include "Mesh.hpp"
 #include "MeshRenderer.hpp"
 #include "CollisionBox.hpp"
+#include "Camera.hpp"
 
 //This object is meant to be created dynamically with 'new'
 class Object {
@@ -12,10 +13,13 @@ public:
 	Object(Mesh* mesh, Material* material);
 	
 	void addChildren(Object* child);
+	void setTransform(Transform t);
+	void updateGraphics(Camera* c);
 	void render();
 
 	~Object();
 
+	Transform transform;
 private:
 	//this class is owner of the children
 	std::vector<Object*> children;
@@ -23,7 +27,6 @@ private:
 	Mesh* mesh;
 	Material* material;
 
-	Transform transform;
 	MeshRenderer meshRenderer;
 	CollisionBox collision;
 };
