@@ -4,8 +4,8 @@
 #include "Material.hpp"
 
 Object* createObject(aiNode* node, const aiScene* scene) {
-	Mesh* mesh = new Mesh();
-	Material* material = new Material();
+	Object* result = new Object();
+	
 	//Combine all the meshes found in this node into a single one
 	//For the material, use the last one found (because it's easier to code
 	for (size_t i = 0; i < node->mNumMeshes; i++) {
@@ -16,38 +16,51 @@ Object* createObject(aiNode* node, const aiScene* scene) {
 			//actually read the data
 			v.position = glm::vec3(aiMesh->mVertices[j].x, aiMesh->mVertices[j].y, aiMesh->mVertices[j].z);
 			v.normal = glm::vec3(aiMesh->mNormals[j].x, aiMesh->mNormals[j].y, aiMesh->mNormals[j].z);
-			v.color = glm::vec4(1.0, 1.0, 1.0, 1.0);
-			if (aiMesh->GetNumColorChannels() > 0) {
-				v.color = glm::vec4(aiMesh->mColors[j]->r, aiMesh->mColors[j]->g, aiMesh->mColors[j]->b, aiMesh->mColors[j]->a);
-			}
 			v.uv = glm::vec2(0, 0);
 			if (aiMesh->mTextureCoords[0]) {
 				v.uv = glm::vec2(aiMesh->mTextureCoords[0][j].x, aiMesh->mTextureCoords[0][j].y);
 			}
 
 			//add to our mesh
-			mesh->vertices.push_back(v);
+			result->getMesh()->vertices.push_back(v);
 		}
 
 		for (size_t j = 0; j < aiMesh->mNumFaces; j++) {
 			aiFace aiFace = aiMesh->mFaces[j];
 			for (size_t k = 0; k < aiFace.mNumIndices; k++) {
-				mesh->indices.push_back(aiFace.mIndices[k]);
+				result->getMesh()->indices.push_back(aiFace.mIndices[k]);
 			}
 		}
 
 		if (aiMesh->mMaterialIndex >= 0) {
 			aiMaterial* mat = scene->mMaterials[aiMesh->mMaterialIndex];
 			//load material
+			aiColor4D baseColor;
+			aiColor4D ambientColor;
+			aiColor4D diffuseColor;
+			aiColor4D specularColor;
+			float shininess;
+			if (mat->Get(AI_MATKEY_BASE_COLOR, baseColor) == aiReturn_SUCCESS) {
+				result->getMaterial()->baseColor = glm::vec4(baseColor.r, baseColor.g, baseColor.b, baseColor.a);
+				//std::cout << "Set up base color" << std::endl;
+			}
+			if (mat->Get(AI_MATKEY_COLOR_AMBIENT, ambientColor) == aiReturn_SUCCESS) {
+				result->getMaterial()->ambientColor = glm::vec4(ambientColor.r, ambientColor.g, ambientColor.b, ambientColor.a);
+				//std::cout << "Set up ambient color" << std::endl;
+			}
+			if (mat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor) == aiReturn_SUCCESS) {
+				result->getMaterial()->diffuseColor = glm::vec4(diffuseColor.r, diffuseColor.g, diffuseColor.b, diffuseColor.a);
+				//std::cout << "Set up diffuse color" << std::endl;
+			}
+			if (mat->Get(AI_MATKEY_COLOR_SPECULAR, specularColor) == aiReturn_SUCCESS) {
+				result->getMaterial()->specularColor = glm::vec4(specularColor.r, specularColor.g, specularColor.b, specularColor.a);
+				//std::cout << "Set up specular color" << std::endl;
+			}
+			if (mat->Get(AI_MATKEY_SHININESS, shininess) == aiReturn_SUCCESS) {
+				result->getMaterial()->shininess = shininess;
+				//std::cout << "Set up shininess" << std::endl;
+			}
 		}
-	}
-
-	Object* result;
-	if (mesh->vertices.size() > 0) {
-		result = new Object(mesh, material);
-	}
-	else {
-		result = new Object();
 	}
 	
 	for (size_t i = 0; i < node->mNumChildren; i++) {
@@ -77,43 +90,9 @@ Object* AssimpConverter::loadObject(const char* fileName) {
 		exit(Error::ASSIMP_ROOT_IS_NULL);
 	}
 
-	return createObject(scene->mRootNode, scene);
+	Object* result = createObject(scene->mRootNode, scene);
+	importer.FreeScene();
+	result->updateMeshRenderer();
+	return result;
 }
-
-/*
-Mesh* AssimpConverter::aiNodeToMesh(const aiNode* node, const aiScene* scene) {
-	Mesh* m = new Mesh();
-	for (size_t i = 0; i < node->mNumMeshes; i++) {
-		aiMesh* assimpMesh = scene->mMeshes[node->mMeshes[i]];
-
-	}
-
-	for (size_t i = 0; i < node->mNumChildren; i++) {
-		Mesh* children = aiNodeToMesh(node->mChildren[i], scene);
-		m->vertices.insert(m->vertices.end(), children->vertices.begin(), children->vertices.end());
-		delete children;
-	}
-
-	return m;
-	for (size_t i = 0; i < node->mNumMeshes; i++) {
-		aiMesh* assimpMesh = scene->mMeshes[node->mMeshes[i]];
-		std::cout << "Vertices: " << assimpMesh->mNumVertices << std::endl;
-	}
-
-	for (size_t i = 0; i < node->mNumChildren; i++) {
-		aiNodeToMesh(node->mChildren[i], scene);
-	}
-
-	return nullptr;
-}
-
-Material* AssimpConverter::aiNodeToMaterial(const aiNode* node, const aiScene* scene) {
-	for (size_t i = 0; i < scene->mNumMaterials; i++) {
-		aiMaterial* mat = scene->mMaterials[i];
-		std::cout << "Material: " << mat->GetName().C_Str() << std::endl;
-	}
-	
-	return nullptr;
-}
-*/
 

@@ -8,9 +8,8 @@
 
 class MeshRenderer {
 public:
-	MeshRenderer();
 	MeshRenderer(Mesh* mesh, Material* material);
-	void updateMaterial(Transform t, Camera* c);
+	void updateBuffers();
 	void render();
 
 private:

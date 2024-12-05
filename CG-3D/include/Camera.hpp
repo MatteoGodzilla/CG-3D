@@ -23,4 +23,5 @@ private:
 
 	int rightMovement = 0;
 	int forwardMovement = 0;
+	int upwardMovement = 0;
 };

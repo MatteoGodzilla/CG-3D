@@ -1,20 +1,10 @@
 #include "Object.hpp"
 
-Object::Object() {
+Object::Object() 
+	: mesh(Mesh()), material(Material()), meshRenderer(MeshRenderer(&mesh, &material)) 
+{
 	children = std::vector<Object*>();
 	transform = Transform();
-	meshRenderer = MeshRenderer();
-	mesh = nullptr;
-	material = nullptr;
-	collision = CollisionBox();
-}
-
-Object::Object(Mesh* mesh, Material* material) {
-	children = std::vector<Object*>();
-	transform = Transform();
-	meshRenderer = MeshRenderer(mesh, material);
-	this->mesh = mesh;
-	this->material = material;
 	collision = CollisionBox();
 }
 
@@ -32,31 +22,40 @@ void Object::setTransform(Transform t) {
 	}
 }
 
-void Object::updateGraphics(Camera* camera) {
-	meshRenderer.updateMaterial(transform, camera);
+void Object::setMaterial(Material m) {
+	material = m;
 
-	for (auto* child : children) {
-		child->updateGraphics(camera);
+	for (auto* chlid : children) {
+		chlid->setMaterial(m);
 	}
 }
 
-void Object::render() {
-	//first, draw self
+void Object::render(Camera* camera) {
+	material.updateUniforms(transform, camera);
 	meshRenderer.render();
 
-	//then draw children recursively
 	for (auto* child : children) {
-		child->render();
+		child->render(camera);
 	}
 }
 
-Object::~Object() {
-	if (mesh != nullptr)
-		delete mesh;
-	if (material != nullptr)
-		delete material;
-	for (Object* child : children) {
-		child->~Object();
-		delete child;
+void Object::updateMeshRenderer() {
+	meshRenderer.updateBuffers();
+
+	for (auto* child : children) {
+		child->updateMeshRenderer();
 	}
+}
+
+//---GETTERS---
+Transform Object::getTransform() {
+	return transform;
+}
+
+Mesh* Object::getMesh() {
+	return &mesh;
+}
+
+Material* Object::getMaterial() {
+	return &material;
 }

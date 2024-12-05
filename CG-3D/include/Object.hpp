@@ -10,23 +10,25 @@
 class Object {
 public:
 	Object();
-	Object(Mesh* mesh, Material* material);
 	
 	void addChildren(Object* child);
 	void setTransform(Transform t);
-	void updateGraphics(Camera* c);
-	void render();
+	void setMaterial(Material m);
+	void updateMeshRenderer();
+	void render(Camera* c);
 
-	~Object();
+	Transform getTransform();
+	Mesh* getMesh();
+	Material* getMaterial();
 
-	Transform transform;
 private:
 	//this class is owner of the children
 	std::vector<Object*> children;
 	//this class is owner of this pointer
-	Mesh* mesh;
-	Material* material;
+	Mesh mesh;
+	Material material;
 
+	Transform transform;
 	MeshRenderer meshRenderer;
 	CollisionBox collision;
 };

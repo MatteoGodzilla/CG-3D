@@ -1,8 +1,8 @@
 #include "Camera.hpp"
 
 Camera::Camera() {
-    position = glm::vec3(0, 0, 0);
-    yaw = 0;
+    position = glm::vec3(0, 0, 10);
+    yaw = -glm::half_pi<float>();
     pitch = 0;
 }
 
@@ -18,6 +18,12 @@ void Camera::keyboardEvent(GLFWwindow* window, int key, int scancode, int action
         forwardMovement += 1;
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
         forwardMovement -= 1;
+
+    upwardMovement = 0;
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        upwardMovement += 1;
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+        upwardMovement -= 1;
 }
 
 void Camera::mouseButtonEvent(GLFWwindow* window, int button, int action, int mods) {
@@ -46,6 +52,7 @@ void Camera::update(double deltaTime) {
 
     position += (float)rightMovement * (float)deltaTime * speed * rightDir;
     position += (float)forwardMovement * (float)deltaTime * speed * forwardDir;
+    position += (float)upwardMovement * (float)deltaTime * speed * glm::vec3(0.0, 1.0, 0.0);
 }
 
 glm::mat4 Camera::getViewMatrix() {

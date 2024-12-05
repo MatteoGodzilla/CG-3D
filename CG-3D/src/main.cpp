@@ -57,19 +57,40 @@ int main() {
 
 	Object* teapot = AssimpConverter::loadObject("objs/teapot.obj");
 	Transform t = Transform();
-	t.worldRotation = glm::rotate(teapot->transform.worldRotation, glm::pi<float>() / 2, glm::vec3(0, 1, 0));
+	t.worldRotation = glm::rotate(glm::quat(1.0, 0.0, 0.0, 0.0), -glm::half_pi<float>(), glm::vec3(0, 1, 0));
 	t.worldScale = glm::vec3(1.0) / 4.0f;
-	t.worldPosition = glm::vec3(0, -1, 0);
+	t.worldPosition = glm::vec3(2, 0, 0);
 	teapot->setTransform(t);
+	Material red = Material();
+	red.ambientColor = glm::vec4(1.0, 0.0, 0.0, 1.0);
+	teapot->setMaterial(red);
+
+	Object* teapot2 = AssimpConverter::loadObject("objs/teapot.obj");
+	Transform t2 = Transform();
+	t2.worldRotation = glm::rotate(glm::quat(1.0, 0.0, 0.0, 0.0), glm::half_pi<float>(), glm::vec3(1, 0, 0));
+	t2.worldScale = glm::vec3(1.0) / 4.0f;
+	t2.worldPosition = glm::vec3(0, 2, 0);
+	teapot2->setTransform(t2);
+	Material green = Material();
+	green.ambientColor = glm::vec4(0.0, 1.0, 0.0, 1.0);
+	teapot2->setMaterial(green);
+
+	Object* teapot3 = AssimpConverter::loadObject("objs/teapot.obj");
+	Transform t3 = Transform();
+	t3.worldRotation = glm::rotate(glm::quat(1.0, 0.0, 0.0, 0.0), glm::pi<float>(), glm::vec3(0, 1, 0));
+	t3.worldScale = glm::vec3(1.0) / 4.0f;
+	t3.worldPosition = glm::vec3(0, 0, 2);
+	teapot3->setTransform(t3);
+	Material blue = Material();
+	blue.ambientColor = glm::vec4(0.0, 0.0, 1.0, 1.0);
+	teapot3->setMaterial(blue);
 
 	UI gui = UI(window);
 	//---END GAME OBJECTS---
 
-	//Enable transparency effects (needed for the background)
+	//Setup Opengl flags
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	//Enable Depth testing
 	glEnable(GL_DEPTH_TEST);
 
 	//Main loop
@@ -82,27 +103,35 @@ int main() {
 		double deltaTime = nowFrame - lastFrame;
 
 		cam.update(deltaTime);
+		//Transform t = teapot3->getTransform();
+		//t.worldRotation = glm::rotate(t.worldRotation, glm::pi<float>() * (float)deltaTime, glm::vec3(0, 1, 0));
+		//teapot3->setTransform(t);
 
 		lastFrame = nowFrame;
-		//t.worldRotation = glm::rotate(t.worldRotation, (float)(glm::pi<double>() * deltaTime), glm::vec3(1, 1, 1));
-		//teapot->setTransform(t);
 
 		//---UPDATE GRAPHICS---
 		
-		teapot->updateGraphics(&cam);
+		
 
 		//---RENDERING LOGIC---
 		//clear screen
-		glClearColor(0.0, 0.0, 0.0, 1.0);
+		glClearColor(0.5, 0.5, 0.5, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		teapot->render();
-
+		teapot->render(&cam);
+		teapot2->render(&cam);
+		teapot3->render(&cam);
+			
 		//render gui overlay
 		gui.render(deltaTime);
 
 		glfwSwapBuffers(window);
 	}
+
+	Material::destroyShaders();
+	delete teapot;
+	delete teapot2;
+	delete teapot3;
 
 	//Close GLFW
 	glfwTerminate();
