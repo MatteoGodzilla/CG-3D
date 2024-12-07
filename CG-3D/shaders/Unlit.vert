@@ -14,5 +14,5 @@ uniform vec4 baseColor;
 
 void main(){
     gl_Position = projMatrix * viewMatrix * worldMatrix * vec4(position, 1.0);
-    col = vec4(normal, 1.0);
+    col = baseColor;
 }

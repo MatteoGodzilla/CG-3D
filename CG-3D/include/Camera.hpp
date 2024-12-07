@@ -15,8 +15,9 @@ public:
 
 	glm::mat4 getViewMatrix();
 	glm::mat4 getProjMatrix();
+	glm::vec3 getWorldPos();
 private:
-	glm::vec3 position;
+	glm::vec3 worldPosition;
 	float yaw; //horizontal
 	float pitch; //vertical
 	glm::vec2 lastMousePos;

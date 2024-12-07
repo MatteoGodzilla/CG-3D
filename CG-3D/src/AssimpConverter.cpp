@@ -73,7 +73,7 @@ Object* createObject(aiNode* node, const aiScene* scene) {
 
 Object* AssimpConverter::loadObject(const char* fileName) {
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(fileName, aiProcess_Triangulate | aiProcess_FlipUVs);
+	const aiScene* scene = importer.ReadFile(fileName, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals);
 	
 	if (scene == nullptr) {
 		std::cerr << "[AssimpConverter] Scene is null: " << importer.GetErrorString() << std::endl;

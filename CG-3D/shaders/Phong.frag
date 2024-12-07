@@ -1,15 +1,9 @@
 #version 330 core
 
-layout (location = 0) in vec3 position;
-layout (location = 1) in vec3 normal;
-layout (location = 2) in vec2 uv;
+in vec4 worldPos;
+in vec3 adjustedNormal;
 
-out vec4 col;
-
-//Transform of the object
-uniform mat4 worldMatrix;
-uniform mat4 viewMatrix;
-uniform mat4 projMatrix;
+out vec4 result;
 
 //Material properties of the object
 uniform vec4 ambientColor;
@@ -28,14 +22,8 @@ uniform float ambientLightStrength;
 uniform vec3 cameraWorldPos;
 
 void main(){
-    gl_Position = projMatrix * viewMatrix * worldMatrix * vec4(position, 1.0);
-    vec4 worldPos = worldMatrix * vec4(position, 1.0);
-
-    vec3 adjustedNormal = normalize(mat3(transpose(inverse(worldMatrix))) * normal);
-
     //start off with some ambient color by default
-    vec4 result = ambientColor * ambientLightStrength;
-
+    result = ambientColor * ambientLightStrength;
     for(int i = 0; i < LIGHT_NUM; i++){
         vec3 worldPosToLight = normalize(lights[i].position - worldPos.xyz);
         vec3 worldPosToCamera = normalize(cameraWorldPos - worldPos.xyz);
@@ -48,6 +36,5 @@ void main(){
         float specularPerc = pow(max(dot(reflectionVec, worldPosToCamera),0), lights[i].strength);
         result += specularColor * specularPerc;
     }
-
-    col = vec4(result.xyz,1.0);
+    result.a = 1;
 }

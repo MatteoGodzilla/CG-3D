@@ -72,6 +72,9 @@
     <ClCompile Include="src\Camera.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="src\LightManager.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\UI.hpp">
@@ -90,9 +93,6 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="include\Mesh.hpp">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Light.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="include\Material.hpp">
@@ -114,6 +114,12 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="include\Camera.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\LightManager.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MaterialTypeSwitcher.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

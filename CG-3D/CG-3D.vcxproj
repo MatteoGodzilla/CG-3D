@@ -145,6 +145,7 @@
     <ClCompile Include="src\AssimpConverter.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Input.cpp" />
+    <ClCompile Include="src\LightManager.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\MeshRenderer.cpp" />
@@ -160,8 +161,9 @@
     <ClInclude Include="include\Input.hpp" />
     <ClInclude Include="include\InputDebugger.hpp" />
     <ClInclude Include="include\InputReceiver.hpp" />
-    <ClInclude Include="include\Light.hpp" />
+    <ClInclude Include="include\LightManager.hpp" />
     <ClInclude Include="include\Material.hpp" />
+    <ClInclude Include="include\MaterialTypeSwitcher.hpp" />
     <ClInclude Include="include\Mesh.hpp" />
     <ClInclude Include="include\MeshRenderer.hpp" />
     <ClInclude Include="include\Object.hpp" />
