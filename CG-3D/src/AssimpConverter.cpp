@@ -34,6 +34,7 @@ Object* createObject(aiNode* node, const aiScene* scene) {
 
 		if (aiMesh->mMaterialIndex >= 0) {
 			aiMaterial* mat = scene->mMaterials[aiMesh->mMaterialIndex];
+			Material myMat = Material();
 			//load material
 			aiColor4D baseColor;
 			aiColor4D ambientColor;
@@ -41,25 +42,21 @@ Object* createObject(aiNode* node, const aiScene* scene) {
 			aiColor4D specularColor;
 			float shininess;
 			if (mat->Get(AI_MATKEY_BASE_COLOR, baseColor) == aiReturn_SUCCESS) {
-				result->getMaterial()->baseColor = glm::vec4(baseColor.r, baseColor.g, baseColor.b, baseColor.a);
-				//std::cout << "Set up base color" << std::endl;
+				myMat.baseColor = glm::vec4(baseColor.r, baseColor.g, baseColor.b, baseColor.a);
 			}
 			if (mat->Get(AI_MATKEY_COLOR_AMBIENT, ambientColor) == aiReturn_SUCCESS) {
-				result->getMaterial()->ambientColor = glm::vec4(ambientColor.r, ambientColor.g, ambientColor.b, ambientColor.a);
-				//std::cout << "Set up ambient color" << std::endl;
+				myMat.ambientColor = glm::vec4(ambientColor.r, ambientColor.g, ambientColor.b, ambientColor.a);
 			}
 			if (mat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor) == aiReturn_SUCCESS) {
-				result->getMaterial()->diffuseColor = glm::vec4(diffuseColor.r, diffuseColor.g, diffuseColor.b, diffuseColor.a);
-				//std::cout << "Set up diffuse color" << std::endl;
+				myMat.diffuseColor = glm::vec4(diffuseColor.r, diffuseColor.g, diffuseColor.b, diffuseColor.a);
 			}
 			if (mat->Get(AI_MATKEY_COLOR_SPECULAR, specularColor) == aiReturn_SUCCESS) {
-				result->getMaterial()->specularColor = glm::vec4(specularColor.r, specularColor.g, specularColor.b, specularColor.a);
-				//std::cout << "Set up specular color" << std::endl;
+				myMat.specularColor = glm::vec4(specularColor.r, specularColor.g, specularColor.b, specularColor.a);
 			}
 			if (mat->Get(AI_MATKEY_SHININESS, shininess) == aiReturn_SUCCESS) {
-				result->getMaterial()->shininess = shininess;
-				//std::cout << "Set up shininess" << std::endl;
+				myMat.shininess = shininess;
 			}
+			result->setMaterial(myMat);
 		}
 	}
 	

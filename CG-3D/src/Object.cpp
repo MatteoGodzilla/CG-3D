@@ -56,6 +56,7 @@ Mesh* Object::getMesh() {
 	return &mesh;
 }
 
-Material* Object::getMaterial() {
-	return &material;
+//returns a copy of the material
+Material Object::getMaterial() {
+	return material;
 }

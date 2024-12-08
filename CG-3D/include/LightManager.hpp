@@ -1,22 +1,24 @@
 #pragma once
 #include "glad/glad.h"
-#include "glm/glm.hpp"
+#include "PointLight.hpp"
 #include "Material.hpp"
+#include "Object.hpp"
+#include "ObjectConstructor.hpp"
 
-//They emit white light
-struct PointLight {
-	glm::vec3 position;
-	float strength;
-};
+#define LIGHT_COUNT 2
 
 class LightManager {
 public:
 	LightManager();
 	void updateLights();
-	glm::vec3 getLightPosition(int index);
-	void setLightPosition(int index, glm::vec3 t);
+	PointLight getLight(int index);
+	void setLight(int index, PointLight light);
+	void renderLights(Camera* camera);
+	~LightManager();
 
 private:
-	PointLight pointLights[2];
+	void updateUniform(GLint id);
+	PointLight pointLights[LIGHT_COUNT];
+	Object* lightObjects[LIGHT_COUNT];
 	float ambientLightStrength;
 };

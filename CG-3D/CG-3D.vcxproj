@@ -150,6 +150,7 @@
     <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\MeshRenderer.cpp" />
     <ClCompile Include="src\Object.cpp" />
+    <ClCompile Include="src\ObjectConstructor.cpp" />
     <ClCompile Include="src\Utils.cpp" />
     <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\UI.cpp" />
@@ -162,11 +163,13 @@
     <ClInclude Include="include\InputDebugger.hpp" />
     <ClInclude Include="include\InputReceiver.hpp" />
     <ClInclude Include="include\LightManager.hpp" />
+    <ClInclude Include="include\ObjectConstructor.hpp" />
     <ClInclude Include="include\Material.hpp" />
     <ClInclude Include="include\MaterialTypeSwitcher.hpp" />
     <ClInclude Include="include\Mesh.hpp" />
     <ClInclude Include="include\MeshRenderer.hpp" />
     <ClInclude Include="include\Object.hpp" />
+    <ClInclude Include="include\PointLight.hpp" />
     <ClInclude Include="include\Utils.hpp" />
     <ClInclude Include="include\Transform.hpp" />
     <ClInclude Include="include\UI.hpp" />

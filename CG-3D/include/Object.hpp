@@ -19,7 +19,7 @@ public:
 
 	Transform getTransform();
 	Mesh* getMesh();
-	Material* getMaterial();
+	Material getMaterial();
 
 private:
 	//this class is owner of the children

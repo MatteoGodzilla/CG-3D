@@ -75,6 +75,9 @@
     <ClCompile Include="src\LightManager.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="src\ObjectConstructor.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\UI.hpp">
@@ -120,6 +123,12 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="include\MaterialTypeSwitcher.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ObjectConstructor.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PointLight.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
