@@ -38,7 +38,7 @@ void Material::updateUniforms(Transform t, Camera* c) {
 		glUniform4f(glGetUniformLocation(id, "ambientColor"), ambientColor.r, ambientColor.g, ambientColor.b, ambientColor.a);
 		glUniform4f(glGetUniformLocation(id, "diffuseColor"), diffuseColor.r, diffuseColor.g, diffuseColor.b, diffuseColor.a);
 		glUniform4f(glGetUniformLocation(id, "specularColor"), specularColor.r, specularColor.g, specularColor.b, specularColor.a);
-		glUniform3f(glGetUniformLocation(id, "cameraWorldPos"), c->getWorldPos().x, c->getWorldPos().y, c->getWorldPos().z);
+		glUniform3f(glGetUniformLocation(id, "cameraWorldPos"), c->worldPosition.x, c->worldPosition.y, c->worldPosition.z);
 	}
 	else {
 		glUniform4f(glGetUniformLocation(id, "baseColor"), baseColor.r, baseColor.g, baseColor.b, baseColor.a);

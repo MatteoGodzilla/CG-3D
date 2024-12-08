@@ -1,7 +1,8 @@
 #include "Camera.hpp"
 
-Camera::Camera() {
-    worldPosition = glm::vec3(0, 0, 10);
+Camera::Camera() 
+    :worldPosition(glm::vec3(0,0,10)), collision(CollisionSphere(worldPosition, collisionRadius))
+{
     yaw = -glm::half_pi<float>();
     pitch = 0;
 }
@@ -51,6 +52,8 @@ void Camera::update(double deltaTime) {
     worldPosition += (float)rightMovement * (float)deltaTime * speed * rightDir;
     worldPosition += (float)forwardMovement * (float)deltaTime * speed * forwardDir;
     worldPosition += (float)upwardMovement * (float)deltaTime * speed * glm::vec3(0.0, 1.0, 0.0);
+
+    collision.updateCollisionSphere(worldPosition, collisionRadius);
 }
 
 glm::mat4 Camera::getViewMatrix() {
@@ -62,6 +65,6 @@ glm::mat4 Camera::getProjMatrix() {
     return glm::perspective(glm::radians(69.0f), 1.0f, 0.1f, 100.0f);
 }
 
-glm::vec3 Camera::getWorldPos() {
-    return worldPosition;
+CollisionSphere Camera::getCollision() {
+    return collision;
 }

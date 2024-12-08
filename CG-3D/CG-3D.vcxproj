@@ -144,6 +144,9 @@
     <ClCompile Include="..\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\AssimpConverter.cpp" />
     <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="src\CollisionBox.cpp" />
+    <ClCompile Include="src\CollisionManager.cpp" />
+    <ClCompile Include="src\CollisionSphere.cpp" />
     <ClCompile Include="src\Input.cpp" />
     <ClCompile Include="src\LightManager.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -159,6 +162,8 @@
     <ClInclude Include="include\AssimpConverter.hpp" />
     <ClInclude Include="include\Camera.hpp" />
     <ClInclude Include="include\CollisionBox.hpp" />
+    <ClInclude Include="include\CollisionManager.hpp" />
+    <ClInclude Include="include\CollisionSphere.hpp" />
     <ClInclude Include="include\Input.hpp" />
     <ClInclude Include="include\InputDebugger.hpp" />
     <ClInclude Include="include\InputReceiver.hpp" />

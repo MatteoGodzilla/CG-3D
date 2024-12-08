@@ -1,6 +1,7 @@
 #pragma once
 #include "Transform.hpp"
 #include "InputReceiver.hpp"
+#include "CollisionSphere.hpp"
 
 class Camera : public InputReceiver{
 public:
@@ -15,12 +16,17 @@ public:
 
 	glm::mat4 getViewMatrix();
 	glm::mat4 getProjMatrix();
-	glm::vec3 getWorldPos();
-private:
+	void setWorldPos(glm::vec3 worldPos);
+	CollisionSphere getCollision();
+	
 	glm::vec3 worldPosition;
+private:
 	float yaw; //horizontal
 	float pitch; //vertical
 	glm::vec2 lastMousePos;
+
+	CollisionSphere collision;
+	float collisionRadius = 0.5;
 
 	int rightMovement = 0;
 	int forwardMovement = 0;

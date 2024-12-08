@@ -15,11 +15,13 @@ public:
 	void setTransform(Transform t);
 	void setMaterial(Material m);
 	void updateMeshRenderer();
+	void updateCollisionBox();
 	void render(Camera* c);
 
 	Transform getTransform();
 	Mesh* getMesh();
 	Material getMaterial();
+	CollisionBox getCollision();
 
 private:
 	//this class is owner of the children
@@ -31,4 +33,5 @@ private:
 	Transform transform;
 	MeshRenderer meshRenderer;
 	CollisionBox collision;
+	bool dirtyCollision;
 };

@@ -6,6 +6,7 @@ Object::Object()
 	children = std::vector<Object*>();
 	transform = Transform();
 	collision = CollisionBox();
+	dirtyCollision = true;
 }
 
 //now this object is the parent and owner
@@ -20,6 +21,7 @@ void Object::setTransform(Transform t) {
 	for (auto* child : children) {
 		child->setTransform(t);
 	}
+	dirtyCollision = true;
 }
 
 void Object::setMaterial(Material m) {
@@ -47,6 +49,28 @@ void Object::updateMeshRenderer() {
 	}
 }
 
+void Object::updateCollisionBox() {
+	if (!dirtyCollision)
+		return;
+	std::vector<glm::vec3> vertexPoints;
+
+	for (auto* child : children) {
+		child->updateCollisionBox();
+		auto bounds = child->getCollision().getBounds();
+		vertexPoints.push_back(bounds.first);
+		vertexPoints.push_back(bounds.second);
+	}
+
+	glm::mat4 worldMatrix = transform.calculateMatrix();
+	for (auto& vertex : mesh.vertices) {
+		glm::vec4 worldPos = worldMatrix * glm::vec4(vertex.position, 1);
+		vertexPoints.push_back(glm::vec3(worldPos.x, worldPos.y, worldPos.z));
+	}
+
+	collision.updateCollisionBoxFromPoints(vertexPoints);
+	dirtyCollision = false;
+}
+
 //---GETTERS---
 Transform Object::getTransform() {
 	return transform;
@@ -59,4 +83,8 @@ Mesh* Object::getMesh() {
 //returns a copy of the material
 Material Object::getMaterial() {
 	return material;
+}
+
+CollisionBox Object::getCollision() {
+	return collision;
 }

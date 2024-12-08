@@ -13,6 +13,7 @@
 #include "LightManager.hpp"
 #include "MaterialTypeSwitcher.hpp"
 #include "ObjectConstructor.hpp"
+#include "CollisionManager.hpp"
 
 void resizeCallback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
@@ -58,7 +59,7 @@ int main() {
 	Camera cam = Camera();
 	Input::addConsumer(&cam);
 
-	LightManager lightManager = LightManager();
+	CollisionManager collManager = CollisionManager(&cam);
 
 	Object* teapot = AssimpConverter::loadObject("objs/teapot.obj");
 	Transform t = Transform();
@@ -73,6 +74,7 @@ int main() {
 	red.diffuseColor = glm::vec4(1, 0, 0, 1.0);
 	red.specularColor = glm::vec4(1.0, 1.0, 1.0, 1.0);
 	teapot->setMaterial(red);
+	collManager.addObject(teapot);
 
 	MaterialTypeSwitcher matSwitcher = MaterialTypeSwitcher(teapot);
 	Input::addConsumer(&matSwitcher);
@@ -86,6 +88,7 @@ int main() {
 	Material green = Material();
 	green.baseColor = glm::vec4(0.0, 1.0, 0.0, 1.0);
 	teapot2->setMaterial(green);
+	collManager.addObject(teapot2);
 
 	Object* teapot3 = AssimpConverter::loadObject("objs/teapot.obj");
 	Transform t3 = Transform();
@@ -96,6 +99,9 @@ int main() {
 	Material blue = Material();
 	blue.baseColor = glm::vec4(0.0, 0.0, 1.0, 1.0);
 	teapot3->setMaterial(blue);
+	collManager.addObject(teapot3);
+
+	LightManager lightManager = LightManager();
 
 	Object* light1 = ObjectConstructor::createLightObject(lightManager.getLight(0).position, lightManager.getLight(0).color);
 	Object* light2 = ObjectConstructor::createLightObject(lightManager.getLight(1).position, lightManager.getLight(1).color);
@@ -118,9 +124,13 @@ int main() {
 		double deltaTime = nowFrame - lastFrame;
 
 		cam.update(deltaTime);
+		collManager.updateCollisions();
+		collManager.resolveCollisions();
+		
 		Transform t = teapot->getTransform();
 		t.worldRotation = glm::rotate(t.worldRotation, 1.0f * (float)deltaTime, glm::vec3(0, 1, 0));
 		teapot->setTransform(t);
+		teapot->updateCollisionBox();
 
 		PointLight a = lightManager.getLight(0);
 		a.color = glm::vec4(cos(nowFrame), sin(nowFrame), 0, 1);
@@ -132,9 +142,7 @@ int main() {
 
 		lastFrame = nowFrame;
 
-		//---UPDATE GRAPHICS---
-		
-		
+		printf("%f %f %f\n", cam.worldPosition.x, cam.worldPosition.y, cam.worldPosition.z);
 
 		//---RENDERING LOGIC---
 		//clear screen

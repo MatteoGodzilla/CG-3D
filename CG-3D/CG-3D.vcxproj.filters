@@ -16,6 +16,24 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{9e320498-53db-4e5b-9f14-c3f835abed1d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headers\Physics">
+      <UniqueIdentifier>{2d676846-4580-4942-913d-3d0afbcc7d98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Input">
+      <UniqueIdentifier>{090540d7-ba99-403d-bcb0-fe1b34bd655d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Lighting">
+      <UniqueIdentifier>{96c2c5d2-a532-4f6e-a4cd-94f9872f7c7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Input">
+      <UniqueIdentifier>{fe1b029a-b2b8-442c-934f-4f75e1144e1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Lighting">
+      <UniqueIdentifier>{de4abef3-b296-4a3a-b21a-9f136bce0e80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Physics">
+      <UniqueIdentifier>{9efb0824-ed16-4075-afa7-3032ad2446d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -48,9 +66,6 @@
     <ClCompile Include="..\imgui\backends\imgui_impl_glfw.cpp">
       <Filter>Source\External\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="src\Input.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="src\Transform.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -72,11 +87,23 @@
     <ClCompile Include="src\Camera.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\LightManager.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="src\ObjectConstructor.cpp">
       <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Input.cpp">
+      <Filter>Source\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LightManager.cpp">
+      <Filter>Source\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CollisionBox.cpp">
+      <Filter>Source\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CollisionSphere.cpp">
+      <Filter>Source\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CollisionManager.cpp">
+      <Filter>Source\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -84,15 +111,6 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="include\Transform.hpp">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Input.hpp">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\InputReceiver.hpp">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\InputDebugger.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="include\Mesh.hpp">
@@ -110,26 +128,41 @@
     <ClInclude Include="include\Object.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\CollisionBox.hpp">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="include\AssimpConverter.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="include\Camera.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\LightManager.hpp">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MaterialTypeSwitcher.hpp">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="include\ObjectConstructor.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="include\CollisionBox.hpp">
+      <Filter>Headers\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CollisionSphere.hpp">
+      <Filter>Headers\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Input.hpp">
+      <Filter>Headers\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\InputDebugger.hpp">
+      <Filter>Headers\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\InputReceiver.hpp">
+      <Filter>Headers\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MaterialTypeSwitcher.hpp">
+      <Filter>Headers\Input</Filter>
+    </ClInclude>
     <ClInclude Include="include\PointLight.hpp">
-      <Filter>Headers</Filter>
+      <Filter>Headers\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="include\LightManager.hpp">
+      <Filter>Headers\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CollisionManager.hpp">
+      <Filter>Headers\Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
