@@ -17,24 +17,49 @@ Texture* ImageLoader::getTexture(std::string path) {
 	}
 }
 
-Texture* ImageLoader::loadTexture(std::string path) {
+Texture* ImageLoader::loadTexture(std::string path, GLint target) {
 	Texture* t = new Texture();
 	unsigned char *data = stbi_load(path.c_str(), &t->width, &t->height, &t->channels, 0);
-	
+	if (data == nullptr) {
+		std::cerr << "[ImageLoader] There was an error loading texture " << path << "(" << target << ")" << std::endl;
+		exit(Error::STB_IMAGE_CANNOT_LOAD);
+	}
+
 	glGenTextures(1, &t->texId);
-	glBindTexture(GL_TEXTURE_2D, t->texId);
+	glBindTexture(target, t->texId);
 	//these might need to be changed in runtime
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	int storeType = t->channels == 3 ? GL_RGB : GL_RGBA;
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, t->width, t->height, 0, storeType, GL_UNSIGNED_BYTE, data);
-	glGenerateMipmap(GL_TEXTURE_2D);
+	glTexImage2D(target, 0, GL_RGBA, t->width, t->height, 0, storeType, GL_UNSIGNED_BYTE, data);
+	glGenerateMipmap(target);
 
 	stbi_image_free(data);
 	return t;
+}
+
+Cubemap* ImageLoader::loadCubemap(std::string right, std::string left, std::string top, std::string bottom, std::string front, std::string back) {
+	cubemap = Cubemap();
+
+	glGenTextures(1, &cubemap.cubemapId);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap.cubemapId);
+
+	cubemap.right = loadTexture(right, GL_TEXTURE_CUBE_MAP_POSITIVE_X);
+	cubemap.left = loadTexture(left, GL_TEXTURE_CUBE_MAP_NEGATIVE_X);
+	cubemap.top = loadTexture(top, GL_TEXTURE_CUBE_MAP_POSITIVE_Y);
+	cubemap.bottom = loadTexture(bottom, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y);
+	cubemap.front = loadTexture(front, GL_TEXTURE_CUBE_MAP_POSITIVE_Z);
+	cubemap.back = loadTexture(back, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z);
+
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	return &cubemap;
 }
 
 ImageLoader::~ImageLoader() {

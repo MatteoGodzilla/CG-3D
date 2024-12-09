@@ -1,7 +1,7 @@
 #include "Object.hpp"
 
 Object::Object() 
-	: mesh(Mesh()), material(Material()), meshRenderer(MeshRenderer(&mesh, &material)) 
+	: mesh(Mesh()), material(Material(Material::UNLIT)), meshRenderer(MeshRenderer(&mesh, &material)) 
 {
 	children = std::vector<Object*>();
 	transform = Transform();

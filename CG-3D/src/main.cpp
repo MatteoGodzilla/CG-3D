@@ -69,8 +69,7 @@ int main() {
 	t.worldScale = glm::vec3(1.0)/4.0f;
 	t.worldPosition = glm::vec3(2, 0, 0);
 	teapot->setTransform(t);
-	Material red = Material();
-	red.updateType(Material::BLINN_PHONG);
+	Material red = Material(Material::BLINN_PHONG);
 	red.baseColor = glm::vec4(0.0, 0.0, 0.0, 1.0);
 	red.ambientColor = glm::vec4(0.25, 0.0, 0.0, 1.0);
 	red.diffuseColor = glm::vec4(1, 0, 0, 1.0);
@@ -87,8 +86,7 @@ int main() {
 	t2.worldScale = glm::vec3(1.0) / 4.0f;
 	t2.worldPosition = glm::vec3(0, 2, 0);
 	teapot2->setTransform(t2);
-	Material green = Material();
-	green.updateType(Material::UNLIT_TEXTURE);
+	Material green = Material(Material::UNLIT_TEXTURE);
 	green.baseColor = glm::vec4(0.0, 1.0, 0.0, 1.0);
 	green.texture = imgLoader.getTexture("textures/checkerboard.jpg");
 	teapot2->setMaterial(green);
@@ -100,11 +98,23 @@ int main() {
 	t3.worldScale = glm::vec3(1.0) / 4.0f;
 	t3.worldPosition = glm::vec3(0, 0, 2);
 	teapot3->setTransform(t3);
-	Material blue = Material();
-	blue.updateType(Material::UNLIT);
+	Material blue = Material(Material::UNLIT);
 	blue.baseColor = glm::vec4(0.0, 0.0, 1.0, 1.0);
 	teapot3->setMaterial(blue);
 	collManager.addObject(teapot3);
+
+	Object* skybox = ObjectConstructor::createSkybox();
+	Material skyboxM = Material(Material::UNLIT_CUBEMAP);
+	skyboxM.baseColor = glm::vec4(1, 1, 1, 1);
+	skyboxM.cubemap = imgLoader.loadCubemap(
+		"textures/skybox/right.jpg",
+		"textures/skybox/left.jpg",
+		"textures/skybox/top.jpg",
+		"textures/skybox/bottom.jpg",
+		"textures/skybox/front.jpg",
+		"textures/skybox/back.jpg"
+	);
+	skybox->setMaterial(skyboxM);
 
 	LightManager lightManager = LightManager();
 
@@ -118,6 +128,7 @@ int main() {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
 
 	//Main loop
 	double lastFrame = glfwGetTime();
@@ -157,6 +168,7 @@ int main() {
 		teapot->render(&cam);
 		teapot2->render(&cam);
 		teapot3->render(&cam);
+		skybox->render(&cam);
 			
 		//render gui overlay
 		gui.render(deltaTime);
@@ -168,6 +180,9 @@ int main() {
 	delete teapot;
 	delete teapot2;
 	delete teapot3;
+	delete skybox;
+	delete light1;
+	delete light2;
 
 	//Close GLFW
 	glfwTerminate();

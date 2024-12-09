@@ -13,11 +13,12 @@ public:
 		GOURAD,
 		PHONG,
 		BLINN_PHONG,
-		UNLIT_TEXTURE
+		UNLIT_TEXTURE,
+		UNLIT_CUBEMAP,
 	};
 
 	static void initShaders();
-	Material(MaterialType type = GOURAD);
+	Material(MaterialType type);
 	void bind();
 	void updateUniforms(Transform transform, Camera* camera);
 	void updateType(MaterialType type);
@@ -31,7 +32,9 @@ public:
 	glm::vec4 specularColor;
 	float shininess;
 	// reference to textures
+	// these can either be: both nullptr or one of each nullptr, NOT both
 	Texture* texture;
+	Cubemap* cubemap;
 private:
 	MaterialType type;
 
@@ -41,5 +44,6 @@ private:
 	static GLuint phongShaderId;
 	static GLuint blinnPhongShaderId;
 	static GLuint unlitTextureShaderId;
+	static GLuint unlitCubemapShaderId;
 
 };

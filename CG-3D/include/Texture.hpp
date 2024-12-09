@@ -7,3 +7,13 @@ struct Texture {
 	int channels;
 	GLuint texId;
 };
+
+struct Cubemap {
+	Texture* left;
+	Texture* right;
+	Texture* top;
+	Texture* bottom;
+	Texture* front;
+	Texture* back;
+	GLuint cubemapId;
+};

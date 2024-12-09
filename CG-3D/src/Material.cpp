@@ -6,6 +6,7 @@ GLuint Material::gouradShaderId;
 GLuint Material::phongShaderId;
 GLuint Material::blinnPhongShaderId;
 GLuint Material::unlitTextureShaderId;
+GLuint Material::unlitCubemapShaderId;
 
 void Material::initShaders() {
 	unlitShaderId = ShaderCompiler::compile("shaders/Unlit.vert", "shaders/Unlit.frag");
@@ -13,6 +14,7 @@ void Material::initShaders() {
 	phongShaderId = ShaderCompiler::compile("shaders/Phong.vert", "shaders/Phong.frag");
 	blinnPhongShaderId = ShaderCompiler::compile("shaders/BlinnPhong.vert", "shaders/BlinnPhong.frag");
 	unlitTextureShaderId = ShaderCompiler::compile("shaders/UnlitTexture.vert", "shaders/UnlitTexture.frag");
+	unlitCubemapShaderId = ShaderCompiler::compile("shaders/Skybox.vert", "shaders/Skybox.frag");
 }
 
 Material::Material(MaterialType type) {
@@ -23,6 +25,7 @@ Material::Material(MaterialType type) {
 	specularColor = glm::vec4(0, 0, 0, 1);
 	shininess = 1;
 	texture = nullptr;
+	cubemap = nullptr;
 }
 
 void Material::bind() {
@@ -36,10 +39,16 @@ void Material::updateUniforms(Transform t, Camera* c) {
 	glUniformMatrix4fv(glGetUniformLocation(id, "worldMatrix"), 1, GL_FALSE, glm::value_ptr(t.calculateMatrix()));
 	glUniformMatrix4fv(glGetUniformLocation(id, "viewMatrix"), 1, GL_FALSE, glm::value_ptr(c->getViewMatrix()));
 	glUniformMatrix4fv(glGetUniformLocation(id, "projMatrix"), 1, GL_FALSE, glm::value_ptr(c->getProjMatrix()));
-	
+
 	switch (type) {
+	case UNLIT_CUBEMAP:
+		if (cubemap != nullptr) glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap->cubemapId);
+		glUniform4f(glGetUniformLocation(id, "baseColor"), baseColor.r, baseColor.g, baseColor.b, baseColor.a);
+		break;
 	case UNLIT_TEXTURE:
-		if (texture != nullptr) glBindTexture(GL_TEXTURE_2D, texture->texId);
+		if(texture != nullptr) glBindTexture(GL_TEXTURE_2D, texture->texId);
+		glUniform4f(glGetUniformLocation(id, "baseColor"), baseColor.r, baseColor.g, baseColor.b, baseColor.a);
+		break;
 	case UNLIT:
 		glUniform4f(glGetUniformLocation(id, "baseColor"), baseColor.r, baseColor.g, baseColor.b, baseColor.a);
 		break;
@@ -70,7 +79,11 @@ GLuint Material::matTypeToId(MaterialType type) {
 		return blinnPhongShaderId;
 	case Material::UNLIT_TEXTURE:
 		return unlitTextureShaderId;
+	case Material::UNLIT_CUBEMAP:
+		return unlitCubemapShaderId;
 	default: 
+		std::cerr << "[Material] Invalid type set: " << type << std::endl;
+		exit(Error::MATERIAL_TYPE_INVALID);
 		return 0;
 	}
 }
@@ -80,4 +93,6 @@ void Material::destroyShaders() {
 	glDeleteProgram(gouradShaderId);
 	glDeleteProgram(phongShaderId);
 	glDeleteProgram(blinnPhongShaderId);
+	glDeleteProgram(unlitTextureShaderId);
+	glDeleteProgram(unlitCubemapShaderId);
 }

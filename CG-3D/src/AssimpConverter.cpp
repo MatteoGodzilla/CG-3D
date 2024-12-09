@@ -1,8 +1,5 @@
 #include "AssimpConverter.hpp"
 
-#include "Mesh.hpp"
-#include "Material.hpp"
-
 Object* createObject(aiNode* node, const aiScene* scene) {
 	Object* result = new Object();
 	
@@ -34,7 +31,7 @@ Object* createObject(aiNode* node, const aiScene* scene) {
 
 		if (aiMesh->mMaterialIndex >= 0) {
 			aiMaterial* mat = scene->mMaterials[aiMesh->mMaterialIndex];
-			Material myMat = Material();
+			Material myMat = Material(Material::BLINN_PHONG);
 			//load material
 			aiColor4D baseColor;
 			aiColor4D ambientColor;
