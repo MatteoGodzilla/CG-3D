@@ -5,43 +5,72 @@ Camera::Camera()
 {
     yaw = -glm::half_pi<float>();
     pitch = 0;
+    mode = FPS;
 }
 
 void Camera::keyboardEvent(GLFWwindow* window, int key, int scancode, int action, int mods) {  
-    rightMovement = 0;
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        rightMovement += 1;
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        rightMovement -= 1;
-
-    forwardMovement = 0;
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        forwardMovement += 1;
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        forwardMovement -= 1;
-
-    upwardMovement = 0;
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-        upwardMovement += 1;
-    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-        upwardMovement -= 1;
-}
-
-void Camera::mouseButtonEvent(GLFWwindow* window, int button, int action, int mods) {}
-
-void Camera::mousePosEvent(GLFWwindow* window, double xpos, double ypos) {
-    glm::vec2 now = glm::vec2(xpos, ypos);
-    glm::vec2 delta = now - lastMousePos;
-
-    float epsilon = 0.0001;
-
-    if (glm::length(delta) < 1000) {
-        yaw += delta.x / 1000;
-        pitch -= delta.y / 1000;
-        pitch = std::min(std::max(-glm::half_pi<float>() + epsilon, pitch), glm::half_pi<float>() - epsilon);
+    //toggle between modes
+    if (key == GLFW_KEY_TAB && action == GLFW_PRESS) {
+        if (mode == FPS) {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            mode = TRACKBALL;
+        }
+        else {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            mode = FPS;
+        }
     }
 
-    lastMousePos = now;
+    //move if it's in fps mode
+    if (mode == FPS) {
+        rightMovement = 0;
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+            rightMovement += 1;
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+            rightMovement -= 1;
+
+        forwardMovement = 0;
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+            forwardMovement += 1;
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+            forwardMovement -= 1;
+
+        upwardMovement = 0;
+        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+            upwardMovement += 1;
+        if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+            upwardMovement -= 1;
+    }
+}
+
+void Camera::mouseButtonEvent(GLFWwindow* window, int button, int action, int mods) {
+    if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
+        if (action == GLFW_PRESS) {
+            double xpos, ypos;
+            glfwGetCursorPos(window, &xpos, &ypos);
+            dragStart = glm::vec2(xpos, ypos);
+        }
+    }
+}
+
+void Camera::mousePosEvent(GLFWwindow* window, double xpos, double ypos) {
+    if (mode == FPS) {
+        glm::vec2 now = glm::vec2(xpos, ypos);
+        glm::vec2 delta = now - lastMousePos;
+
+        float epsilon = 0.0001;
+
+        if (glm::length(delta) < 1000) {
+            yaw += delta.x / 1000;
+            pitch -= delta.y / 1000;
+            pitch = std::min(std::max(-glm::half_pi<float>() + epsilon, pitch), glm::half_pi<float>() - epsilon);
+        }
+
+        lastMousePos = now;
+    }
+    else {
+
+    }
 }
 
 void Camera::update(double deltaTime) {

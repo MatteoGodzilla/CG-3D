@@ -105,6 +105,9 @@
     <ClCompile Include="src\CollisionManager.cpp">
       <Filter>Source\Physics</Filter>
     </ClCompile>
+    <ClCompile Include="src\ImageLoader.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\UI.hpp">
@@ -163,6 +166,12 @@
     </ClInclude>
     <ClInclude Include="include\CollisionManager.hpp">
       <Filter>Headers\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ImageLoader.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Texture.hpp">
+      <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

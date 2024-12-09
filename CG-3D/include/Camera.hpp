@@ -16,18 +16,28 @@ public:
 
 	glm::mat4 getViewMatrix();
 	glm::mat4 getProjMatrix();
-	void setWorldPos(glm::vec3 worldPos);
 	CollisionSphere getCollision();
 	
 	glm::vec3 worldPosition;
 private:
+	static enum CameraMode {
+		FPS,TRACKBALL
+	};
+	CameraMode mode;
+
+	//variables used for fps mode
 	float yaw; //horizontal
 	float pitch; //vertical
 	glm::vec2 lastMousePos;
 
+	//variables used for trackball mode
+	glm::vec2 dragStart;
+
+	//variables for collision 
 	CollisionSphere collision;
 	float collisionRadius = 0.5;
 
+	//movement directions
 	int rightMovement = 0;
 	int forwardMovement = 0;
 	int upwardMovement = 0;

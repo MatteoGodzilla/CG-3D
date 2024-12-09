@@ -1,4 +1,3 @@
 - Trackball virtuale
-- Caricamento texture
 - Cubemap
-- Animazioni
+- Animazioni (basta codificarle su main e aggiornare i transform)

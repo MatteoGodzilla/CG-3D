@@ -4,6 +4,7 @@
 #include "Utils.hpp"
 #include "Transform.hpp"
 #include "Camera.hpp"
+#include "Texture.hpp"
 
 class Material {
 public:
@@ -11,7 +12,8 @@ public:
 		UNLIT,
 		GOURAD,
 		PHONG,
-		BLINN_PHONG
+		BLINN_PHONG,
+		UNLIT_TEXTURE
 	};
 
 	static void initShaders();
@@ -28,13 +30,16 @@ public:
 	glm::vec4 diffuseColor;
 	glm::vec4 specularColor;
 	float shininess;
-	// reference to textures, somehow
+	// reference to textures
+	Texture* texture;
 private:
 	MaterialType type;
+
 	//need to initialize these somewhere
 	static GLuint unlitShaderId;
 	static GLuint gouradShaderId;
 	static GLuint phongShaderId;
 	static GLuint blinnPhongShaderId;
+	static GLuint unlitTextureShaderId;
 
 };

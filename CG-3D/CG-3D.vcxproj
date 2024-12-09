@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)assimp\build\include;$(SolutionDir)assimp\include;$(SolutionDir)glm;$(SolutionDir)glad\include;$(SolutionDir)glfw\include;$(SolutionDir)imgui;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)assimp\build\include;$(SolutionDir)assimp\include;$(SolutionDir)glm;$(SolutionDir)glad\include;$(SolutionDir)glfw\include;$(SolutionDir)stb;$(SolutionDir)imgui;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -147,6 +147,7 @@
     <ClCompile Include="src\CollisionBox.cpp" />
     <ClCompile Include="src\CollisionManager.cpp" />
     <ClCompile Include="src\CollisionSphere.cpp" />
+    <ClCompile Include="src\ImageLoader.cpp" />
     <ClCompile Include="src\Input.cpp" />
     <ClCompile Include="src\LightManager.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -164,6 +165,7 @@
     <ClInclude Include="include\CollisionBox.hpp" />
     <ClInclude Include="include\CollisionManager.hpp" />
     <ClInclude Include="include\CollisionSphere.hpp" />
+    <ClInclude Include="include\ImageLoader.hpp" />
     <ClInclude Include="include\Input.hpp" />
     <ClInclude Include="include\InputDebugger.hpp" />
     <ClInclude Include="include\InputReceiver.hpp" />
@@ -175,6 +177,7 @@
     <ClInclude Include="include\MeshRenderer.hpp" />
     <ClInclude Include="include\Object.hpp" />
     <ClInclude Include="include\PointLight.hpp" />
+    <ClInclude Include="include\Texture.hpp" />
     <ClInclude Include="include\Utils.hpp" />
     <ClInclude Include="include\Transform.hpp" />
     <ClInclude Include="include\UI.hpp" />

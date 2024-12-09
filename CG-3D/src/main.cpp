@@ -14,6 +14,7 @@
 #include "MaterialTypeSwitcher.hpp"
 #include "ObjectConstructor.hpp"
 #include "CollisionManager.hpp"
+#include "ImageLoader.hpp"
 
 void resizeCallback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
@@ -43,7 +44,6 @@ int main() {
 	glfwSetKeyCallback(window, Input::receiveKeyboardEvents);
 	glfwSetCursorPosCallback(window, Input::receiveMousePosEvents);
 	glfwSetMouseButtonCallback(window, Input::receiveMouseButtonEvents);
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	Input::init();
 
 	glfwMakeContextCurrent(window);
@@ -55,8 +55,10 @@ int main() {
 
 	//---BEGIN GAME OBJECTS---
 	Material::initShaders();
+	ImageLoader imgLoader = ImageLoader();
 	
 	Camera cam = Camera();
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	Input::addConsumer(&cam);
 
 	CollisionManager collManager = CollisionManager(&cam);
@@ -86,7 +88,9 @@ int main() {
 	t2.worldPosition = glm::vec3(0, 2, 0);
 	teapot2->setTransform(t2);
 	Material green = Material();
+	green.updateType(Material::UNLIT_TEXTURE);
 	green.baseColor = glm::vec4(0.0, 1.0, 0.0, 1.0);
+	green.texture = imgLoader.getTexture("textures/checkerboard.jpg");
 	teapot2->setMaterial(green);
 	collManager.addObject(teapot2);
 
@@ -97,6 +101,7 @@ int main() {
 	t3.worldPosition = glm::vec3(0, 0, 2);
 	teapot3->setTransform(t3);
 	Material blue = Material();
+	blue.updateType(Material::UNLIT);
 	blue.baseColor = glm::vec4(0.0, 0.0, 1.0, 1.0);
 	teapot3->setMaterial(blue);
 	collManager.addObject(teapot3);
@@ -141,8 +146,6 @@ int main() {
 		lightManager.setLight(1, b);
 
 		lastFrame = nowFrame;
-
-		printf("%f %f %f\n", cam.worldPosition.x, cam.worldPosition.y, cam.worldPosition.z);
 
 		//---RENDERING LOGIC---
 		//clear screen
