@@ -64,6 +64,7 @@ int main() {
 	CollisionManager collManager = CollisionManager(&cam);
 
 	Object* teapot = AssimpConverter::loadObject("objs/teapot.obj");
+	teapot->name = "Teapot 1";
 	Transform t = Transform();
 	t.worldRotation = glm::rotate(glm::quat(1.0, 0.0, 0.0, 0.0), -glm::half_pi<float>(), glm::vec3(0, 1, 0));
 	t.worldScale = glm::vec3(1.0)/4.0f;
@@ -81,6 +82,7 @@ int main() {
 	Input::addConsumer(&matSwitcher);
 
 	Object* teapot2 = AssimpConverter::loadObject("objs/teapot.obj");
+	teapot2->name = "Teapot 2";
 	Transform t2 = Transform();
 	t2.worldRotation = glm::rotate(glm::quat(1.0, 0.0, 0.0, 0.0), glm::half_pi<float>(), glm::vec3(1, 0, 0));
 	t2.worldScale = glm::vec3(1.0) / 4.0f;
@@ -93,6 +95,7 @@ int main() {
 	collManager.addObject(teapot2);
 
 	Object* teapot3 = AssimpConverter::loadObject("objs/teapot.obj");
+	teapot3->name = "Teapot 3";
 	Transform t3 = Transform();
 	t3.worldRotation = glm::rotate(glm::quat(1.0, 0.0, 0.0, 0.0), glm::pi<float>(), glm::vec3(0, 1, 0));
 	t3.worldScale = glm::vec3(1.0) / 4.0f;
@@ -103,7 +106,7 @@ int main() {
 	teapot3->setMaterial(blue);
 	collManager.addObject(teapot3);
 
-	Object* skybox = ObjectConstructor::createSkybox();
+	Object* skybox = ObjectConstructor::createUnitCube();
 	Material skyboxM = Material(Material::UNLIT_CUBEMAP);
 	skyboxM.baseColor = glm::vec4(1, 1, 1, 1);
 	skyboxM.cubemap = imgLoader.loadCubemap(
@@ -151,6 +154,9 @@ int main() {
 		teapot->setTransform(t);
 		teapot->updateCollisionBox();
 
+		teapot2->updateCollisionBox();
+		teapot3->updateCollisionBox();
+
 		PointLight a = lightManager.getLight(0);
 		a.color = glm::vec4(cos(nowFrame), sin(nowFrame), 0, 1);
 		lightManager.setLight(0, a);
@@ -158,6 +164,10 @@ int main() {
 		PointLight b = lightManager.getLight(1);
 		b.position = glm::vec3(5 * cos(nowFrame), 0, 5 * sin(nowFrame));
 		lightManager.setLight(1, b);
+
+		Object* selected = collManager.getSelectedObject();
+		if(selected != nullptr)
+			std::cout << selected->name << std::endl;
 
 		lastFrame = nowFrame;
 
@@ -172,6 +182,7 @@ int main() {
 		teapot2->render(&cam);
 		teapot3->render(&cam);
 		skybox->render(&cam);
+		collManager.renderCollisions(&cam);
 			
 		//render gui overlay
 		gui.render(deltaTime);

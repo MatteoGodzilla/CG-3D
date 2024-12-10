@@ -8,6 +8,10 @@ Camera::Camera()
     mode = FPS;
     trackBallin = false;
     aspect = 1;
+    lastMousePos = glm::vec2(0, 0);
+    selectionPosition = worldPosition;
+    selectionDirection = glm::vec3(0, 0, -1);
+
 }
 
 void Camera::keyboardEvent(GLFWwindow* window, int key, int scancode, int action, int mods) {  
@@ -46,13 +50,31 @@ void Camera::keyboardEvent(GLFWwindow* window, int key, int scancode, int action
 }
 
 void Camera::mouseButtonEvent(GLFWwindow* window, int button, int action, int mods) {
-    if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
+    if (mode == FPS)
+        return;
+
+    double xpos, ypos;
+    glfwGetCursorPos(window, &xpos, &ypos);
+    int windowWidth; int windowHeight;
+    glfwGetWindowSize(window, &windowWidth, &windowHeight);
+
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        selectionPosition = worldPosition;
+        glm::vec2 normLastMouse = 2.0f * glm::vec2(xpos / windowWidth, ypos / windowHeight) - 1.0f;
+        glm::vec4 viewA = glm::vec4(normLastMouse.x, -normLastMouse.y, 0.5, 1);
+
+        glm::mat4 invView = glm::inverse(getProjMatrix() * getViewMatrix());
+        glm::vec4 worldUniformA = invView * viewA;
+
+        glm::vec3 worldA = glm::vec3(worldUniformA.x / worldUniformA.w, worldUniformA.y / worldUniformA.w, worldUniformA.z / worldUniformA.w);
+
+        selectionDirection = glm::normalize(worldA - selectionPosition);
+
+        //std::cout << selectionDirection.x << " " << selectionDirection.y << " " << selectionDirection.z << std::endl;
+    } else if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
         if (action == GLFW_PRESS) {
-            double xpos, ypos;
-            glfwGetCursorPos(window, &xpos, &ypos);
             dragStart = glm::vec2(xpos, ypos);
             trackBallin = true;
-            startingAngles = glm::vec2(yaw, pitch);
         }
         else {
             trackBallin = false;
@@ -85,6 +107,7 @@ void Camera::mousePosEvent(GLFWwindow* window, double xpos, double ypos) {
         if (glm::dot(normNowMouse, normNowMouse) < 1)
             zNowMouse = sqrt(1 - glm::dot(normNowMouse, normNowMouse));
 
+        //a and b are already normalized if they are inside the circle, but not outside
         glm::vec3 a = glm::normalize(glm::vec3(normLastMouse.x, normLastMouse.y, zLastMouse));
         glm::vec3 b = glm::normalize(glm::vec3(normNowMouse.x, normNowMouse.y, zNowMouse));
         glm::vec3 rotationAxis = glm::normalize(glm::cross(a, b));
@@ -122,4 +145,8 @@ glm::mat4 Camera::getProjMatrix() {
 
 CollisionSphere Camera::getCollision() {
     return collision;
+}
+
+std::pair<glm::vec3, glm::vec3> Camera::getSelectionRay() {
+    return std::make_pair(selectionPosition, selectionDirection);
 }

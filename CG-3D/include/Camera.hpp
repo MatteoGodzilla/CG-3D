@@ -17,6 +17,7 @@ public:
 	glm::mat4 getViewMatrix();
 	glm::mat4 getProjMatrix();
 	CollisionSphere getCollision();
+	std::pair<glm::vec3, glm::vec3> getSelectionRay();
 	
 	glm::vec3 worldPosition;
 private:
@@ -33,7 +34,6 @@ private:
 	//variables used for trackball mode
 	glm::vec2 dragStart;
 	bool trackBallin;
-	glm::vec2 startingAngles;
 
 	//variables for collision 
 	CollisionSphere collision;
@@ -45,4 +45,8 @@ private:
 	int upwardMovement = 0;
 
 	float aspect;
+
+	//selection 
+	glm::vec3 selectionPosition;
+	glm::vec3 selectionDirection;
 };

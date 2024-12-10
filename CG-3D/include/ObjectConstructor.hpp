@@ -3,5 +3,6 @@
 
 namespace ObjectConstructor {
 	Object* createLightObject(glm::vec3 worldPosition, glm::vec4 color);
-	Object* createSkybox();
+	Object* createUnitCube();
+	Object* createRay(glm::vec3 worldPosition, glm::vec3 direction);
 };

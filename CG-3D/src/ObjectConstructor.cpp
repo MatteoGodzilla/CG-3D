@@ -1,7 +1,7 @@
 #include "ObjectConstructor.hpp"
 
 Object* ObjectConstructor::createLightObject(glm::vec3 worldPosition, glm::vec4 color) {
-	Object* light = new Object();
+	Object* light = new Object("Light");
 	//generate light mesh
 	auto& lightVertices = light->getMesh()->vertices;
 	lightVertices.push_back({ {0, 1, 0} });
@@ -46,8 +46,8 @@ Object* ObjectConstructor::createLightObject(glm::vec3 worldPosition, glm::vec4 
 	return light;
 }
 
-Object* ObjectConstructor::createSkybox() {
-	Object* result = new Object();
+Object* ObjectConstructor::createUnitCube() {
+	Object* result = new Object("Cube");
 	auto& vertices = result->getMesh()->vertices;
 	vertices.push_back({ {-1, -1, -1} }); //left	bottom	back
 	vertices.push_back({ {+1, -1, -1} }); //right	bottom	back
@@ -111,4 +111,29 @@ Object* ObjectConstructor::createSkybox() {
 
 	result->updateMeshRenderer();
 	return result;
+}
+
+Object* ObjectConstructor::createRay(glm::vec3 worldPosition, glm::vec3 direction) {
+	glm::vec4 gizmoColor = glm::vec4(0,0,0,1);
+	float rayLength = 10;
+	Object* line = new Object("Ray Line");
+	line->getMesh()->vertices.push_back({ {0,0,0} });
+	line->getMesh()->vertices.push_back({ rayLength * direction });
+	line->getMesh()->indices.push_back(0);
+	line->getMesh()->indices.push_back(1);
+	line->getMeshRenderer()->renderMode = GL_LINES;
+	line->updateMeshRenderer();
+
+	Transform lineTransform = Transform();
+	lineTransform.worldPosition = worldPosition;
+	line->setTransform(lineTransform);
+
+	Material lineMaterial = Material(Material::UNLIT);
+	lineMaterial.baseColor = gizmoColor;
+	line->setMaterial(lineMaterial);
+	
+	Object* center = createLightObject(worldPosition, gizmoColor);
+	center->addChildren(line);
+	
+	return center;
 }

@@ -30,6 +30,7 @@ MeshRenderer::MeshRenderer(Mesh* mesh, Material* material) {
 	glGenBuffers(1, &EBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->indices.size() * sizeof(unsigned int), mesh->indices.data(), GL_STATIC_DRAW);
+	renderMode = GL_TRIANGLES;
 }
 
 void MeshRenderer::updateBuffers() {
@@ -46,5 +47,5 @@ void MeshRenderer::render() {
 
 	material->bind();
 	glBindVertexArray(VAO);
-	glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(renderMode, mesh->indices.size(), GL_UNSIGNED_INT, 0);
 }

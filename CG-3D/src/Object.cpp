@@ -1,12 +1,13 @@
 #include "Object.hpp"
 
-Object::Object() 
+Object::Object(std::string name) 
 	: mesh(Mesh()), material(Material(Material::UNLIT)), meshRenderer(MeshRenderer(&mesh, &material)) 
 {
 	children = std::vector<Object*>();
 	transform = Transform();
 	collision = CollisionBox();
 	dirtyCollision = true;
+	this->name = name;
 }
 
 //now this object is the parent and owner
@@ -87,4 +88,8 @@ Material Object::getMaterial() {
 
 CollisionBox Object::getCollision() {
 	return collision;
+}
+
+MeshRenderer* Object::getMeshRenderer() {
+	return &meshRenderer;
 }

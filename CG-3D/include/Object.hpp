@@ -9,7 +9,7 @@
 //This object is meant to be created dynamically with 'new'
 class Object {
 public:
-	Object();
+	Object(std::string name);
 	
 	void addChildren(Object* child);
 	void setTransform(Transform t);
@@ -22,7 +22,9 @@ public:
 	Mesh* getMesh();
 	Material getMaterial();
 	CollisionBox getCollision();
+	MeshRenderer* getMeshRenderer();
 
+	std::string name;
 private:
 	//this class is owner of the children
 	std::vector<Object*> children;

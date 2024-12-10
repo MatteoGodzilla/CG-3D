@@ -1,7 +1,7 @@
 #include "AssimpConverter.hpp"
 
 Object* createObject(aiNode* node, const aiScene* scene) {
-	Object* result = new Object();
+	Object* result = new Object(node->mName.C_Str());
 	
 	//Combine all the meshes found in this node into a single one
 	//For the material, use the last one found (because it's easier to code

@@ -12,6 +12,7 @@ public:
 	void updateBuffers();
 	void render();
 
+	GLint renderMode;
 private:
 	//this class does NOT own either material nor mesh, they are contained in object
 	Material* material;
