@@ -139,7 +139,10 @@ int main() {
 		double nowFrame = glfwGetTime();
 		double deltaTime = nowFrame - lastFrame;
 
-		cam.update(deltaTime);
+		int width, height;
+		glfwGetWindowSize(window, &width, &height);
+
+		cam.update(deltaTime, (float)width / (float)height);
 		collManager.updateCollisions();
 		collManager.resolveCollisions();
 		

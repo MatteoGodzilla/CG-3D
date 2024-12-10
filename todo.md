@@ -1,3 +1,0 @@
-- Trackball virtuale
-- Cubemap
-- Animazioni (basta codificarle su main e aggiornare i transform)

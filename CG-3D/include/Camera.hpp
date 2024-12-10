@@ -12,7 +12,7 @@ public:
 
 	void mousePosEvent(GLFWwindow* window, double xpos, double ypos) override;
 
-	void update(double deltaTime);
+	void update(double deltaTime, float aspect);
 
 	glm::mat4 getViewMatrix();
 	glm::mat4 getProjMatrix();
@@ -32,6 +32,8 @@ private:
 
 	//variables used for trackball mode
 	glm::vec2 dragStart;
+	bool trackBallin;
+	glm::vec2 startingAngles;
 
 	//variables for collision 
 	CollisionSphere collision;
@@ -41,4 +43,6 @@ private:
 	int rightMovement = 0;
 	int forwardMovement = 0;
 	int upwardMovement = 0;
+
+	float aspect;
 };
