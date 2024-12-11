@@ -2,23 +2,23 @@
 
 //because c++ is a dumb language and these need to be defined somewhere 
 GLuint Material::unlitShaderId;
+GLuint Material::unlitTextureShaderId;
+GLuint Material::unlitCubemapShaderId;
 GLuint Material::gouradShaderId;
 GLuint Material::phongShaderId;
 GLuint Material::blinnPhongShaderId;
-GLuint Material::unlitTextureShaderId;
-GLuint Material::unlitCubemapShaderId;
 
 void Material::initShaders() {
 	unlitShaderId = ShaderCompiler::compile("shaders/Unlit.vert", "shaders/Unlit.frag");
+	unlitTextureShaderId = ShaderCompiler::compile("shaders/UnlitTexture.vert", "shaders/UnlitTexture.frag");
+	unlitCubemapShaderId = ShaderCompiler::compile("shaders/Skybox.vert", "shaders/Skybox.frag");
 	gouradShaderId = ShaderCompiler::compile("shaders/Gourad.vert", "shaders/Gourad.frag");
 	phongShaderId = ShaderCompiler::compile("shaders/Phong.vert", "shaders/Phong.frag");
 	blinnPhongShaderId = ShaderCompiler::compile("shaders/BlinnPhong.vert", "shaders/BlinnPhong.frag");
-	unlitTextureShaderId = ShaderCompiler::compile("shaders/UnlitTexture.vert", "shaders/UnlitTexture.frag");
-	unlitCubemapShaderId = ShaderCompiler::compile("shaders/Skybox.vert", "shaders/Skybox.frag");
 }
 
 Material::Material(MaterialType type) {
-	updateType(type);
+	this->type = type;
 	baseColor = glm::vec4(0, 0, 0, 1);
 	ambientColor = glm::vec4(0, 0, 0, 1);
 	diffuseColor = glm::vec4(0, 0, 0, 1);
@@ -63,10 +63,6 @@ void Material::updateUniforms(Transform t, Camera* c) {
 	}
 }
 
-void Material::updateType(MaterialType type) {
-	this->type = type;
-}
-
 GLuint Material::matTypeToId(MaterialType type) {
 	switch (type) {
 	case Material::UNLIT: 
@@ -90,9 +86,9 @@ GLuint Material::matTypeToId(MaterialType type) {
 
 void Material::destroyShaders() {
 	glDeleteProgram(unlitShaderId);
+	glDeleteProgram(unlitTextureShaderId);
+	glDeleteProgram(unlitCubemapShaderId);
 	glDeleteProgram(gouradShaderId);
 	glDeleteProgram(phongShaderId);
 	glDeleteProgram(blinnPhongShaderId);
-	glDeleteProgram(unlitTextureShaderId);
-	glDeleteProgram(unlitCubemapShaderId);
 }

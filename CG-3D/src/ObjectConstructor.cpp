@@ -38,11 +38,11 @@ Object* ObjectConstructor::createLightObject(glm::vec3 worldPosition, glm::vec4 
 	Transform lightTransform = Transform();
 	lightTransform.worldPosition = worldPosition;
 	lightTransform.worldScale = glm::vec3(0.1);
-	light->setTransform(lightTransform);
+	light->setTransformAll(lightTransform);
 
 	Material lightMaterial = Material(Material::UNLIT);
 	lightMaterial.baseColor = color;
-	light->setMaterial(lightMaterial);
+	light->setMaterialAll(lightMaterial);
 	return light;
 }
 
@@ -126,11 +126,11 @@ Object* ObjectConstructor::createRay(glm::vec3 worldPosition, glm::vec3 directio
 
 	Transform lineTransform = Transform();
 	lineTransform.worldPosition = worldPosition;
-	line->setTransform(lineTransform);
+	line->setTransformAll(lineTransform);
 
 	Material lineMaterial = Material(Material::UNLIT);
 	lineMaterial.baseColor = gizmoColor;
-	line->setMaterial(lineMaterial);
+	line->setMaterialAll(lineMaterial);
 	
 	Object* center = createLightObject(worldPosition, gizmoColor);
 	center->addChildren(line);

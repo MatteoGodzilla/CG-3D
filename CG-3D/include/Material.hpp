@@ -10,21 +10,22 @@ class Material {
 public:
 	enum MaterialType {
 		UNLIT,
+		UNLIT_TEXTURE,
+		UNLIT_CUBEMAP,
 		GOURAD,
 		PHONG,
 		BLINN_PHONG,
-		UNLIT_TEXTURE,
-		UNLIT_CUBEMAP,
+		MAT_TYPE_COUNT // just to make loops easier 
 	};
 
 	static void initShaders();
 	Material(MaterialType type);
 	void bind();
 	void updateUniforms(Transform transform, Camera* camera);
-	void updateType(MaterialType type);
 	static void destroyShaders();
 	static GLuint matTypeToId(MaterialType type);
-	
+
+	MaterialType type;
 	// various parameters for bling-phong and gourad shading
 	glm::vec4 baseColor;
 	glm::vec4 ambientColor;
@@ -32,11 +33,10 @@ public:
 	glm::vec4 specularColor;
 	float shininess;
 	// reference to textures
-	// these can either be: both nullptr or one of each nullptr, NOT both
+	// UNLIT_TEXTURE -> texture != nullptr; UNLIT_CUBEMAP -> cubemap != nullptr; everything else has both nullptr;
 	Texture* texture;
 	Cubemap* cubemap;
 private:
-	MaterialType type;
 
 	//need to initialize these somewhere
 	static GLuint unlitShaderId;

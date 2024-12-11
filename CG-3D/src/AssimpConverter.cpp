@@ -53,7 +53,7 @@ Object* createObject(aiNode* node, const aiScene* scene) {
 			if (mat->Get(AI_MATKEY_SHININESS, shininess) == aiReturn_SUCCESS) {
 				myMat.shininess = shininess;
 			}
-			result->setMaterial(myMat);
+			result->setMaterialAll(myMat);
 		}
 	}
 	

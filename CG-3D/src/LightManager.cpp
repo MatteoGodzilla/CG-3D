@@ -18,10 +18,10 @@ void LightManager::updateLights() {
 	for (int i = 0; i < LIGHT_COUNT; i++) {
 		Transform t = lightObjects[i]->getTransform();
 		t.worldPosition = pointLights[i].position;
-		lightObjects[i]->setTransform(t);
+		lightObjects[i]->setTransformAll(t);
 		Material m = lightObjects[i]->getMaterial();
 		m.baseColor = pointLights[i].color;
-		lightObjects[i]->setMaterial(m);
+		lightObjects[i]->setMaterialAll(m);
 	}
 }
 

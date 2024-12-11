@@ -15,21 +15,29 @@ void Object::addChildren(Object* child) {
 	children.push_back(child);
 }
 
-//force the transform onto the children
-void Object::setTransform(Transform t) {
+void Object::setTransformSelf(Transform t) {
 	transform = t;
-
-	for (auto* child : children) {
-		child->setTransform(t);
-	}
 	dirtyCollision = true;
 }
 
-void Object::setMaterial(Material m) {
+void Object::setMaterialSelf(Material m) {
 	material = m;
+}
+
+//force the transform onto the children
+void Object::setTransformAll(Transform t) {
+	setTransformSelf(t);
+
+	for (auto* child : children) {
+		child->setTransformAll(t);
+	}
+}
+
+void Object::setMaterialAll(Material m) {
+	setMaterialSelf(m);
 
 	for (auto* chlid : children) {
-		chlid->setMaterial(m);
+		chlid->setMaterialAll(m);
 	}
 }
 
@@ -92,4 +100,8 @@ CollisionBox Object::getCollision() {
 
 MeshRenderer* Object::getMeshRenderer() {
 	return &meshRenderer;
+}
+
+std::vector<Object*>& Object::getChildren() {
+	return children;
 }

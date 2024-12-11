@@ -12,8 +12,10 @@ public:
 	Object(std::string name);
 	
 	void addChildren(Object* child);
-	void setTransform(Transform t);
-	void setMaterial(Material m);
+	void setTransformSelf(Transform t);
+	void setMaterialSelf(Material m);
+	void setTransformAll(Transform t);
+	void setMaterialAll(Material m);
 	void updateMeshRenderer();
 	void updateCollisionBox();
 	void render(Camera* c);
@@ -23,6 +25,9 @@ public:
 	Material getMaterial();
 	CollisionBox getCollision();
 	MeshRenderer* getMeshRenderer();
+
+	//functions added just for the hierarchical view
+	std::vector<Object*>& getChildren();
 
 	std::string name;
 private:

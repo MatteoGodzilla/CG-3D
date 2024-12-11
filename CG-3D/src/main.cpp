@@ -63,20 +63,24 @@ int main() {
 
 	CollisionManager collManager = CollisionManager(&cam);
 
+	Object* scene = new Object("Scene root");
+
 	Object* teapot = AssimpConverter::loadObject("objs/teapot.obj");
 	teapot->name = "Teapot 1";
 	Transform t = Transform();
 	t.worldRotation = glm::rotate(glm::quat(1.0, 0.0, 0.0, 0.0), -glm::half_pi<float>(), glm::vec3(0, 1, 0));
 	t.worldScale = glm::vec3(1.0)/4.0f;
 	t.worldPosition = glm::vec3(2, 0, 0);
-	teapot->setTransform(t);
+	teapot->setTransformAll(t);
 	Material red = Material(Material::BLINN_PHONG);
 	red.baseColor = glm::vec4(0.0, 0.0, 0.0, 1.0);
 	red.ambientColor = glm::vec4(0.25, 0.0, 0.0, 1.0);
 	red.diffuseColor = glm::vec4(1, 0, 0, 1.0);
 	red.specularColor = glm::vec4(1.0, 1.0, 1.0, 1.0);
-	teapot->setMaterial(red);
+	teapot->setMaterialAll(red);
 	collManager.addObject(teapot);
+	
+	scene->addChildren(teapot);
 
 	MaterialTypeSwitcher matSwitcher = MaterialTypeSwitcher(teapot);
 	Input::addConsumer(&matSwitcher);
@@ -87,12 +91,14 @@ int main() {
 	t2.worldRotation = glm::rotate(glm::quat(1.0, 0.0, 0.0, 0.0), glm::half_pi<float>(), glm::vec3(1, 0, 0));
 	t2.worldScale = glm::vec3(1.0) / 4.0f;
 	t2.worldPosition = glm::vec3(0, 2, 0);
-	teapot2->setTransform(t2);
+	teapot2->setTransformAll(t2);
 	Material green = Material(Material::UNLIT_TEXTURE);
 	green.baseColor = glm::vec4(0.0, 1.0, 0.0, 1.0);
 	green.texture = imgLoader.getTexture("textures/checkerboard.jpg");
-	teapot2->setMaterial(green);
+	teapot2->setMaterialAll(green);
 	collManager.addObject(teapot2);
+
+	scene->addChildren(teapot2);
 
 	Object* teapot3 = AssimpConverter::loadObject("objs/teapot.obj");
 	teapot3->name = "Teapot 3";
@@ -100,13 +106,16 @@ int main() {
 	t3.worldRotation = glm::rotate(glm::quat(1.0, 0.0, 0.0, 0.0), glm::pi<float>(), glm::vec3(0, 1, 0));
 	t3.worldScale = glm::vec3(1.0) / 4.0f;
 	t3.worldPosition = glm::vec3(0, 0, 2);
-	teapot3->setTransform(t3);
+	teapot3->setTransformAll(t3);
 	Material blue = Material(Material::UNLIT);
 	blue.baseColor = glm::vec4(0.0, 0.0, 1.0, 1.0);
-	teapot3->setMaterial(blue);
+	teapot3->setMaterialAll(blue);
 	collManager.addObject(teapot3);
 
+	scene->addChildren(teapot3);
+
 	Object* skybox = ObjectConstructor::createUnitCube();
+	skybox->name = "Skybox";
 	Material skyboxM = Material(Material::UNLIT_CUBEMAP);
 	skyboxM.baseColor = glm::vec4(1, 1, 1, 1);
 	skyboxM.cubemap = imgLoader.loadCubemap(
@@ -117,12 +126,11 @@ int main() {
 		"textures/skybox/front.jpg",
 		"textures/skybox/back.jpg"
 	);
-	skybox->setMaterial(skyboxM);
+	skybox->setMaterialAll(skyboxM);
+
+	scene->addChildren(skybox);
 
 	LightManager lightManager = LightManager();
-
-	Object* light1 = ObjectConstructor::createLightObject(lightManager.getLight(0).position, lightManager.getLight(0).color);
-	Object* light2 = ObjectConstructor::createLightObject(lightManager.getLight(1).position, lightManager.getLight(1).color);
 
 	UI gui = UI(window);
 	//---END GAME OBJECTS---
@@ -148,26 +156,22 @@ int main() {
 		cam.update(deltaTime, (float)width / (float)height);
 		collManager.updateCollisions();
 		collManager.resolveCollisions();
-		
-		Transform t = teapot->getTransform();
-		t.worldRotation = glm::rotate(t.worldRotation, 1.0f * (float)deltaTime, glm::vec3(0, 1, 0));
-		teapot->setTransform(t);
-		teapot->updateCollisionBox();
 
+		teapot->updateCollisionBox();
 		teapot2->updateCollisionBox();
 		teapot3->updateCollisionBox();
 
-		PointLight a = lightManager.getLight(0);
-		a.color = glm::vec4(cos(nowFrame), sin(nowFrame), 0, 1);
-		lightManager.setLight(0, a);
+		//PointLight a = lightManager.getLight(0);
+		//a.color = glm::vec4(cos(nowFrame), sin(nowFrame), 0, 1);
+		//lightManager.setLight(0, a);
 
-		PointLight b = lightManager.getLight(1);
-		b.position = glm::vec3(5 * cos(nowFrame), 0, 5 * sin(nowFrame));
-		lightManager.setLight(1, b);
+		//PointLight b = lightManager.getLight(1);
+		//b.position = glm::vec3(5 * cos(nowFrame), 0, 5 * sin(nowFrame));
+		//lightManager.setLight(1, b);
 
 		Object* selected = collManager.getSelectedObject();
-		if(selected != nullptr)
-			std::cout << selected->name << std::endl;
+		//if(selected != nullptr)
+		//	std::cout << selected->name << std::endl;
 
 		lastFrame = nowFrame;
 
@@ -178,25 +182,17 @@ int main() {
 
 		lightManager.updateLights();
 		lightManager.renderLights(&cam);
-		teapot->render(&cam);
-		teapot2->render(&cam);
-		teapot3->render(&cam);
-		skybox->render(&cam);
+		scene->render(&cam);
 		collManager.renderCollisions(&cam);
 			
 		//render gui overlay
-		gui.render(deltaTime);
+		gui.hierarchy(deltaTime, scene, &lightManager);
 
 		glfwSwapBuffers(window);
 	}
 
 	Material::destroyShaders();
-	delete teapot;
-	delete teapot2;
-	delete teapot3;
-	delete skybox;
-	delete light1;
-	delete light2;
+	delete scene;
 
 	//Close GLFW
 	glfwTerminate();

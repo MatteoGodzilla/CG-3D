@@ -72,11 +72,11 @@ void CollisionManager::renderCollisions(Camera* cam) {
 		Transform t = Transform();
 		t.worldPosition = position;
 		t.worldScale = glm::vec3(scale.x, scale.y, scale.z);
-		o->setTransform(t);
+		o->setTransformAll(t);
 
 		Material m = Material(Material::UNLIT);
 		m.baseColor = glm::vec4(1, 1, 1, 1);
-		o->setMaterial(m);
+		o->setMaterialAll(m);
 
 		o->render(cam);
 		delete o;

@@ -5,122 +5,152 @@ UI::UI(GLFWwindow* window) {
 	ImGui::CreateContext();
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 330");
-
-	//activeBoidGraph = NULL;
-	//activeBoidCount = 0;
-	//flockCenter = { 0.0, 0.0 };
-	//flockSpeed = { 0.0, 0.0 };
-	//playerPos = { 0.0, 0.0 };
-	//playerSpeed = { 0.0, 0.0 };
 }
 
-//This is required by ImGui in order to convert any possible data source into a float value, 
-//so that it can be used by ImGui to create the plot 
-float plotFunc(void* data, int index) {
-	std::deque<size_t>* dataAsDeque = (std::deque<size_t>*)data;
-	return (float)dataAsDeque->at(index);
-}
-
-void UI::render(double deltaTime) {
+void UI::hierarchy(double deltaTime, Object* root, LightManager* lightMan) {
 	//Begin ImGui Frame
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 
+	ImGui::SetNextWindowPos(ImVec2(0,0), ImGuiCond_Always);
+	ImVec2 size = ImGui::GetMainViewport()->Size;
+	size.x /= 4;
+	ImGui::SetNextWindowSize(size, ImGuiCond_Once);
+	ImGui::Begin("Hierarchy", nullptr);
+	hierarchyObjectUI(root, true);
+	hierarchyLightUI(lightMan);
+	ImGui::End();
+
 	ImGui::ShowDemoWindow();
-
-	//Options window
-	/*
-	
-	ImGui::Begin("Options", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
-	ImGui::SliderFloat("Camera Size", &orthoSize, 10, 100);
-	ImGui::SliderFloat("Max Player Speed", &maxPlayerSpeed, 0, 5);
-	ImGui::End();
-
-	ImGui::Begin("Simulation Parameters", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
-	ImGui::Checkbox("Enable collisions player-active", &simulationParams.collisionsPlayerActive);
-	ImGui::Checkbox("Enable collisions active-active", &simulationParams.collisionsActiveActive);
-	ImGui::Checkbox("Enable collisions active-inactive", &simulationParams.collisionsActiveInactive);
-
-	ImGui::NewLine();
-	ImGui::SliderFloat("Player Collision radius", &simulationParams.playerSize, 0, 16);
-	ImGui::SliderFloat("Boid Collision radius", &simulationParams.boidSize, 0, 16);
-	ImGui::SliderFloat("Boid Avoid radius", &simulationParams.boidAvoidRadius, 0, 16);
-	ImGui::SliderFloat("Player-Boid Activate radius", &simulationParams.boidActivateRadius, 0, 16);
-
-	ImGui::NewLine();
-	ImGui::SliderFloat("Rule 1 (position) strength", &simulationParams.strengthRule1, 0, 10);
-	ImGui::SliderFloat("Rule 2 (avoidance) strength", &simulationParams.strengthRule2, 0, 10);
-	ImGui::SliderFloat("Rule 3 (velocity) strength", &simulationParams.strengthRule3, 0, 10);
-	ImGui::SliderFloat("Drag strength", &simulationParams.speedReduction, 0, 1);
-	ImGui::SliderFloat("Speed Clamp", &simulationParams.speedClamp, 1, 100);
-	ImGui::End();
-
-	//Performance window
-	ImGui::Begin("Performance", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
-	ImGui::LabelText("DeltaTime | Framerate", "%f | %f", deltaTime, 1.0 / deltaTime);
-	if (activeBoidGraph != NULL) {
-		//This is the ugliest line of code in the entire project
-		ImGui::PlotLines("Active Boid Count", plotFunc, (void*)activeBoidGraph, (int)activeBoidGraph->size(),
-			0, std::to_string(activeBoidCount).c_str(), 0, FLT_MAX, ImVec2(200, 50));
-	}
-	ImGui::SliderInt("History Size", &historySize, 1, 1000);
-	ImGui::SliderFloat("Time Between Updates", &timeBetweenUpdates, 0.1f, 10.0f);
-	ImGui::End();
-
-	//Controls overlay
-	auto bottomLeft = ImGui::GetMainViewport()->Size;
-	bottomLeft.x = 0;
-	ImGui::SetNextWindowPos(bottomLeft, ImGuiCond_Always, ImVec2(0, 1));
-	ImGui::Begin("Controls", NULL,
-		ImGuiWindowFlags_NoResize |
-		ImGuiWindowFlags_AlwaysAutoResize |
-		ImGuiWindowFlags_NoBackground |
-		ImGuiWindowFlags_NoTitleBar |
-		ImGuiWindowFlags_NoMove
-	);
-	ImGui::Text("Moving mouse with Left button: turn the player in the direction of the mouse");
-	ImGui::Text("Spacebar: boost player in the pointing direction");
-	ImGui::Text("CTRL: slow down player");
-	ImGui::End();
-
-	//Debug Overlay
-	auto bottomRight = ImGui::GetMainViewport()->Size;
-	ImGui::SetNextWindowPos(bottomRight, ImGuiCond_Always, ImVec2(1, 1));
-	ImGui::Begin("Debug", NULL,
-		ImGuiWindowFlags_NoResize |
-		ImGuiWindowFlags_AlwaysAutoResize |
-		ImGuiWindowFlags_NoBackground |
-		ImGuiWindowFlags_NoTitleBar |
-		ImGuiWindowFlags_NoMove
-	);
-	ImGui::LabelText("Player Position", "(%f, %f)", playerPos.x, playerPos.y);
-	ImGui::LabelText("Player Speed", "(%f, %f)", playerSpeed.x, playerSpeed.y);
-	ImGui::LabelText("Flock Center", "(%f, %f)", flockCenter.x, flockCenter.y);
-	ImGui::LabelText("Flock speed", "(%f, %f)", flockSpeed.x, flockSpeed.y);
-	ImGui::End();
-	*/
 
 	//Render ImGui Frame
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-//---GETTERS---
-/*
-float UI::getCameraSize() {
-	return orthoSize;
+void UI::hierarchyObjectUI(Object* obj, bool isRoot){
+	ImGui::PushID(obj);
+	if (ImGui::TreeNode(obj->name.c_str())) {
+		if (!isRoot) {
+			if (ImGui::TreeNode("Transform")) {
+				Transform t = obj->getTransform();
+				float worldPositionAsArray[] = { t.worldPosition.x, t.worldPosition.y, t.worldPosition.z };
+				float worldScaleAsArray[] = { t.worldScale.x, t.worldScale.y, t.worldScale.z };
+				bool modifiedTransform = false;
+				if (ImGui::DragFloat3("World Position", worldPositionAsArray, 0.1, -10, 10)) {
+					t.worldPosition = glm::vec3(worldPositionAsArray[0], worldPositionAsArray[1], worldPositionAsArray[2]);
+					modifiedTransform = true;
+				}
+				if (ImGui::DragFloat3("World Scale", worldScaleAsArray, 0.1, -10, 10)) {
+					t.worldScale = glm::vec3(worldScaleAsArray[0], worldScaleAsArray[1], worldScaleAsArray[2]);
+					modifiedTransform = true;
+				}
+				if (modifiedTransform) {
+					obj->setTransformAll(t);
+					obj->updateCollisionBox();
+				}
+				ImGui::TreePop();
+			}
+			if (ImGui::TreeNode("Material")) {
+				Material m = obj->getMaterial();
+				float baseColorAsArray[] = {m.baseColor.r, m.baseColor.g, m.baseColor.b, m.baseColor.a};
+				float ambientColorAsArray[] = {m.ambientColor.r, m.ambientColor.g, m.ambientColor.b, m.ambientColor.a};
+				float diffuseColorAsArray[] = {m.diffuseColor.r, m.diffuseColor.g, m.diffuseColor.b, m.diffuseColor.a};
+				float specularColorAsArray[] = { m.specularColor.r, m.specularColor.g, m.specularColor.b, m.specularColor.a };
+				bool modifiedMaterial = false;
+				if (ImGui::ColorEdit4("Base color", baseColorAsArray, 0)) {
+					m.baseColor = glm::vec4(baseColorAsArray[0], baseColorAsArray[1], baseColorAsArray[2], baseColorAsArray[3]);
+					modifiedMaterial = true;
+				}
+				if (ImGui::ColorEdit4("Ambient color", ambientColorAsArray, 0)) {
+					m.ambientColor = glm::vec4(ambientColorAsArray[0], ambientColorAsArray[1], ambientColorAsArray[2], ambientColorAsArray[3]);
+					modifiedMaterial = true;
+				}
+				if (ImGui::ColorEdit4("Diffuse color", diffuseColorAsArray, 0)) {
+					m.diffuseColor = glm::vec4(diffuseColorAsArray[0], diffuseColorAsArray[1], diffuseColorAsArray[2], diffuseColorAsArray[3]);
+					modifiedMaterial = true;
+				}
+				if (ImGui::ColorEdit4("Specular color", specularColorAsArray, 0)) {
+					m.specularColor = glm::vec4(specularColorAsArray[0], specularColorAsArray[1], specularColorAsArray[2], specularColorAsArray[3]);
+					modifiedMaterial = true;
+				}
+				
+				if (ImGui::BeginCombo("Material Type", MaterialTypeToCString(m.type))) {
+					for (int i = 0; i < Material::MAT_TYPE_COUNT; i++) {
+						bool isSelected = (i == m.type);
+						if (ImGui::Selectable(MaterialTypeToCString((Material::MaterialType)i), &isSelected)) {
+							m.type = ((Material::MaterialType)i);
+							modifiedMaterial = true;
+						}
+					}
+					ImGui::EndCombo();
+				}
+
+				if (m.texture != nullptr) {
+					if (ImGui::TreeNode("Texture")) {
+						ImGui::Image(m.texture->texId, ImVec2(60, 60));
+						ImGui::TreePop();
+					}
+				}
+
+				if (modifiedMaterial) {
+					obj->setMaterialAll(m);
+				}
+
+				ImGui::TreePop();
+			}
+		}
+
+		if (ImGui::TreeNode("Children")) {
+			for (auto* child : obj->getChildren()) {
+				hierarchyObjectUI(child, false);
+			}
+			ImGui::TreePop();
+		}
+		ImGui::TreePop();
+	}
+	ImGui::PopID();
 }
 
-int UI::getHistorySize() {
-	return historySize;
+const char* UI::MaterialTypeToCString(Material::MaterialType type) {
+	switch (type) {
+	case Material::UNLIT: return "Unlit";
+	case Material::UNLIT_TEXTURE: return "Unlit texture";
+	case Material::UNLIT_CUBEMAP: return "Unlit cubemap";
+	case Material::GOURAD: return "Gourad";
+	case Material::PHONG: return "Phong";
+	case Material::BLINN_PHONG: return "Blinn-Phong";
+	default: return "<INVALID>";
+	}
 }
 
-double UI::getTimeBetweenUpdates() {
-	return timeBetweenUpdates;
-}
+void UI::hierarchyLightUI(LightManager* lightMan) {
+	for (int i = 0; i < LIGHT_COUNT; i++) {
+		ImGui::PushID(lightMan + i);
+		std::string name = "Light ";
+		name.append(std::to_string(i));
+		if (ImGui::TreeNode(name.c_str())) {
+			PointLight light = lightMan->getLight(i);
+			float positionAsArray[] = { light.position.x, light.position.y, light.position.z };
+			float colorAsArray[] = { light.color.r, light.color.g, light.color.b, light.color.a };
+			bool modified = false;
+			if (ImGui::DragFloat3("Position", positionAsArray, 0.1)) {
+				light.position = glm::vec3(positionAsArray[0], positionAsArray[1], positionAsArray[2]);
+				modified = true;
+			}
 
-float UI::getMaxPlayerSpeed() {
-	return maxPlayerSpeed;
+			if (ImGui::ColorEdit4("Color", colorAsArray)) {
+				light.color = glm::vec4(colorAsArray[0], colorAsArray[1], colorAsArray[2], colorAsArray[3]);
+				modified = true;
+			}
+			
+			if (modified) {
+				lightMan->setLight(i, light);
+			}
+
+			ImGui::TreePop();
+		}
+		ImGui::PopID();
+	}
 }
-*/

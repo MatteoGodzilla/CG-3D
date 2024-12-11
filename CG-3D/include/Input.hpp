@@ -4,6 +4,8 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 
+#include "imgui.h"
+
 #include "InputReceiver.hpp"
 
 //this class only does input forwarding, nothing else
