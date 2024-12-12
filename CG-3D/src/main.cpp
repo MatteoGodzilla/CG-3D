@@ -80,7 +80,7 @@ int main() {
 	teapot->setMaterialAll(red);
 	collManager.addObject(teapot);
 	
-	scene->addChildren(teapot);
+	scene->addChild(teapot);
 
 	MaterialTypeSwitcher matSwitcher = MaterialTypeSwitcher(teapot);
 	Input::addConsumer(&matSwitcher);
@@ -98,7 +98,7 @@ int main() {
 	teapot2->setMaterialAll(green);
 	collManager.addObject(teapot2);
 
-	scene->addChildren(teapot2);
+	scene->addChild(teapot2);
 
 	Object* teapot3 = AssimpConverter::loadObject("objs/teapot.obj");
 	teapot3->name = "Teapot 3";
@@ -112,7 +112,7 @@ int main() {
 	teapot3->setMaterialAll(blue);
 	collManager.addObject(teapot3);
 
-	scene->addChildren(teapot3);
+	scene->addChild(teapot3);
 
 	Object* skybox = ObjectConstructor::createUnitCube();
 	skybox->name = "Skybox";
@@ -128,7 +128,19 @@ int main() {
 	);
 	skybox->setMaterialAll(skyboxM);
 
-	scene->addChildren(skybox);
+	scene->addChild(skybox);
+
+	Object* pyramid = ObjectConstructor::createUnitPyramid();
+	Transform pyramidTransform = Transform();
+	pyramidTransform.worldPosition = glm::vec3(5, 2, 4);
+	pyramidTransform.worldRotation = glm::rotate(pyramidTransform.worldRotation, glm::quarter_pi<float>(), glm::vec3(0, 1, 0));
+	pyramid->setTransformAll(pyramidTransform);
+	scene->addChild(pyramid);
+	collManager.addObject(pyramid);
+
+	Object* sphere = ObjectConstructor::createTorus(8,1,20,20);
+	scene->addChild(sphere);
+	collManager.addObject(sphere);
 
 	LightManager lightManager = LightManager();
 
@@ -161,17 +173,7 @@ int main() {
 		teapot2->updateCollisionBox();
 		teapot3->updateCollisionBox();
 
-		//PointLight a = lightManager.getLight(0);
-		//a.color = glm::vec4(cos(nowFrame), sin(nowFrame), 0, 1);
-		//lightManager.setLight(0, a);
-
-		//PointLight b = lightManager.getLight(1);
-		//b.position = glm::vec3(5 * cos(nowFrame), 0, 5 * sin(nowFrame));
-		//lightManager.setLight(1, b);
-
 		Object* selected = collManager.getSelectedObject();
-		//if(selected != nullptr)
-		//	std::cout << selected->name << std::endl;
 
 		lastFrame = nowFrame;
 
@@ -186,7 +188,11 @@ int main() {
 		collManager.renderCollisions(&cam);
 			
 		//render gui overlay
-		gui.hierarchy(deltaTime, scene, &lightManager);
+		gui.begin();
+		gui.hierarchy(deltaTime, scene, &lightManager, &imgLoader);
+		gui.textures(&imgLoader);
+		gui.selectedObject(selected);
+		gui.end();
 
 		glfwSwapBuffers(window);
 	}

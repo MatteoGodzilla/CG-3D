@@ -11,7 +11,7 @@ class Object {
 public:
 	Object(std::string name);
 	
-	void addChildren(Object* child);
+	void addChild(Object* child);
 	void setTransformSelf(Transform t);
 	void setMaterialSelf(Material m);
 	void setTransformAll(Transform t);

@@ -11,7 +11,7 @@ Object::Object(std::string name)
 }
 
 //now this object is the parent and owner
-void Object::addChildren(Object* child) {
+void Object::addChild(Object* child) {
 	children.push_back(child);
 }
 

@@ -59,7 +59,7 @@ Object* createObject(aiNode* node, const aiScene* scene) {
 	
 	for (size_t i = 0; i < node->mNumChildren; i++) {
 		aiNode* child = node->mChildren[i];
-		result->addChildren(createObject(child, scene));
+		result->addChild(createObject(child, scene));
 	}
 
 	return result;

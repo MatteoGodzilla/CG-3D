@@ -22,7 +22,7 @@ Texture* ImageLoader::loadTexture(std::string path, GLint target) {
 	unsigned char *data = stbi_load(path.c_str(), &t->width, &t->height, &t->channels, 0);
 	if (data == nullptr) {
 		std::cerr << "[ImageLoader] There was an error loading texture " << path << "(" << target << ")" << std::endl;
-		exit(Error::STB_IMAGE_CANNOT_LOAD);
+		//exit(Error::STB_IMAGE_CANNOT_LOAD);
 	}
 
 	glGenTextures(1, &t->texId);
@@ -60,6 +60,10 @@ Cubemap* ImageLoader::loadCubemap(std::string right, std::string left, std::stri
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	return &cubemap;
+}
+
+std::unordered_map<std::string, Texture*>& ImageLoader::getTextures() {
+	return textures;
 }
 
 ImageLoader::~ImageLoader() {

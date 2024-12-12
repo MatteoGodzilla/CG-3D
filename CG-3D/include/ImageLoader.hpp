@@ -10,6 +10,7 @@ public:
 	ImageLoader();
 	Texture* getTexture(std::string path);
 	Cubemap* loadCubemap(std::string right, std::string left, std::string top, std::string bottom, std::string front, std::string back);
+	std::unordered_map<std::string, Texture*>& getTextures();
 	~ImageLoader();
 private:
 	Texture* loadTexture(std::string path, GLint target = GL_TEXTURE_2D);

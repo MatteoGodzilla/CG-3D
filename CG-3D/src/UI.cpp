@@ -7,29 +7,41 @@ UI::UI(GLFWwindow* window) {
 	ImGui_ImplOpenGL3_Init("#version 330");
 }
 
-void UI::hierarchy(double deltaTime, Object* root, LightManager* lightMan) {
+void UI::begin() {
 	//Begin ImGui Frame
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
+}
 
+void UI::hierarchy(double deltaTime, Object* root, LightManager* lightMan, ImageLoader* imgLoader) {
 	ImGui::SetNextWindowPos(ImVec2(0,0), ImGuiCond_Always);
 	ImVec2 size = ImGui::GetMainViewport()->Size;
 	size.x /= 4;
 	ImGui::SetNextWindowSize(size, ImGuiCond_Once);
 	ImGui::Begin("Hierarchy", nullptr);
-	hierarchyObjectUI(root, true);
+	hierarchyObjectUI(root, true, imgLoader);
 	hierarchyLightUI(lightMan);
 	ImGui::End();
 
-	ImGui::ShowDemoWindow();
-
-	//Render ImGui Frame
-	ImGui::Render();
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	ImGui::ShowDemoWindow();	
 }
 
-void UI::hierarchyObjectUI(Object* obj, bool isRoot){
+void UI::textures(ImageLoader* imgLoader) {
+	ImGui::Begin("Textures");
+	static char path[256];
+	ImGui::InputText("Path", path, 256);
+	if (ImGui::Button("Load")) {
+		imgLoader->getTexture(path);
+	}
+	for (auto& pair : imgLoader->getTextures()) {
+		ImGui::Image(pair.second->texId, ImVec2(60, 60));
+		ImGui::SameLine();
+	}
+	ImGui::End();
+}
+
+void UI::hierarchyObjectUI(Object* obj, bool isRoot, ImageLoader* imgLoader){
 	ImGui::PushID(obj);
 	if (ImGui::TreeNode(obj->name.c_str())) {
 		if (!isRoot) {
@@ -38,11 +50,13 @@ void UI::hierarchyObjectUI(Object* obj, bool isRoot){
 				float worldPositionAsArray[] = { t.worldPosition.x, t.worldPosition.y, t.worldPosition.z };
 				float worldScaleAsArray[] = { t.worldScale.x, t.worldScale.y, t.worldScale.z };
 				bool modifiedTransform = false;
-				if (ImGui::DragFloat3("World Position", worldPositionAsArray, 0.1, -10, 10)) {
+				ImGui::Text("World Position");
+				if (ImGui::DragFloat3("##WorldPosition", worldPositionAsArray, 0.1, -10, 10)) {
 					t.worldPosition = glm::vec3(worldPositionAsArray[0], worldPositionAsArray[1], worldPositionAsArray[2]);
 					modifiedTransform = true;
 				}
-				if (ImGui::DragFloat3("World Scale", worldScaleAsArray, 0.1, -10, 10)) {
+				ImGui::Text("World Scale");
+				if (ImGui::DragFloat3("##WorldScale", worldScaleAsArray, 0.1, -10, 10)) {
 					t.worldScale = glm::vec3(worldScaleAsArray[0], worldScaleAsArray[1], worldScaleAsArray[2]);
 					modifiedTransform = true;
 				}
@@ -59,24 +73,29 @@ void UI::hierarchyObjectUI(Object* obj, bool isRoot){
 				float diffuseColorAsArray[] = {m.diffuseColor.r, m.diffuseColor.g, m.diffuseColor.b, m.diffuseColor.a};
 				float specularColorAsArray[] = { m.specularColor.r, m.specularColor.g, m.specularColor.b, m.specularColor.a };
 				bool modifiedMaterial = false;
-				if (ImGui::ColorEdit4("Base color", baseColorAsArray, 0)) {
+				ImGui::Text("Base color");
+				if (ImGui::ColorEdit4("##BaseColor", baseColorAsArray, 0)) {
 					m.baseColor = glm::vec4(baseColorAsArray[0], baseColorAsArray[1], baseColorAsArray[2], baseColorAsArray[3]);
 					modifiedMaterial = true;
 				}
-				if (ImGui::ColorEdit4("Ambient color", ambientColorAsArray, 0)) {
+				ImGui::Text("Ambient color");
+				if (ImGui::ColorEdit4("##AmbientColor", ambientColorAsArray, 0)) {
 					m.ambientColor = glm::vec4(ambientColorAsArray[0], ambientColorAsArray[1], ambientColorAsArray[2], ambientColorAsArray[3]);
 					modifiedMaterial = true;
 				}
-				if (ImGui::ColorEdit4("Diffuse color", diffuseColorAsArray, 0)) {
+				ImGui::Text("Diffuse color");
+				if (ImGui::ColorEdit4("##DiffuseColor", diffuseColorAsArray, 0)) {
 					m.diffuseColor = glm::vec4(diffuseColorAsArray[0], diffuseColorAsArray[1], diffuseColorAsArray[2], diffuseColorAsArray[3]);
 					modifiedMaterial = true;
 				}
-				if (ImGui::ColorEdit4("Specular color", specularColorAsArray, 0)) {
+				ImGui::Text("Specular color");
+				if (ImGui::ColorEdit4("##SpecularColor", specularColorAsArray, 0)) {
 					m.specularColor = glm::vec4(specularColorAsArray[0], specularColorAsArray[1], specularColorAsArray[2], specularColorAsArray[3]);
 					modifiedMaterial = true;
 				}
 				
-				if (ImGui::BeginCombo("Material Type", MaterialTypeToCString(m.type))) {
+				ImGui::Text("Material type");
+				if (ImGui::BeginCombo("##Material Type", MaterialTypeToCString(m.type))) {
 					for (int i = 0; i < Material::MAT_TYPE_COUNT; i++) {
 						bool isSelected = (i == m.type);
 						if (ImGui::Selectable(MaterialTypeToCString((Material::MaterialType)i), &isSelected)) {
@@ -87,11 +106,30 @@ void UI::hierarchyObjectUI(Object* obj, bool isRoot){
 					ImGui::EndCombo();
 				}
 
-				if (m.texture != nullptr) {
-					if (ImGui::TreeNode("Texture")) {
-						ImGui::Image(m.texture->texId, ImVec2(60, 60));
-						ImGui::TreePop();
+				if (ImGui::TreeNode("Texture")) {
+					if (m.texture != nullptr) {
+						if (ImGui::ImageButton("##Texture", m.texture->texId, ImVec2(60, 60))) {
+							ImGui::OpenPopup("TexMex");
+						}
 					}
+					else {
+						if (ImGui::Button("Assign Texture")) {
+							ImGui::OpenPopup("TexMex");
+						}
+					}
+					if (ImGui::BeginPopup("TexMex")) {
+						for (auto& pair : imgLoader->getTextures()) {
+							if (ImGui::ImageButton(pair.first.c_str(), pair.second->texId, ImVec2(60, 60))) {
+								m.texture = pair.second;
+								modifiedMaterial = true;
+								ImGui::CloseCurrentPopup();
+							}
+							ImGui::SameLine();
+						}
+						ImGui::EndPopup();
+					}
+
+					ImGui::TreePop();
 				}
 
 				if (modifiedMaterial) {
@@ -104,7 +142,7 @@ void UI::hierarchyObjectUI(Object* obj, bool isRoot){
 
 		if (ImGui::TreeNode("Children")) {
 			for (auto* child : obj->getChildren()) {
-				hierarchyObjectUI(child, false);
+				hierarchyObjectUI(child, false, imgLoader);
 			}
 			ImGui::TreePop();
 		}
@@ -153,4 +191,23 @@ void UI::hierarchyLightUI(LightManager* lightMan) {
 		}
 		ImGui::PopID();
 	}
+}
+
+void UI::selectedObject(Object* selected) {
+	ImGui::SetNextWindowPos(ImVec2(0, ImGui::GetMainViewport()->Size.y),ImGuiCond_Always, ImVec2(0,1));
+	ImGui::Begin("Selected",nullptr, ImGuiWindowFlags_AlwaysAutoResize |
+		ImGuiWindowFlags_NoBackground |
+		ImGuiWindowFlags_NoCollapse | 
+		ImGuiWindowFlags_NoTitleBar
+	);
+	std::string text = "Selected: ";
+	if (selected != nullptr)
+		text += selected->name;
+	ImGui::Text(text.c_str());
+	ImGui::End();
+}
+
+void UI::end() {
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
