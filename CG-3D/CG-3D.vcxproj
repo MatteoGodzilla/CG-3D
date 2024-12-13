@@ -164,6 +164,7 @@
     <ClInclude Include="include\Camera.hpp" />
     <ClInclude Include="include\CollisionBox.hpp" />
     <ClInclude Include="include\CollisionManager.hpp" />
+    <ClInclude Include="include\CollisionManagerInput.hpp" />
     <ClInclude Include="include\CollisionSphere.hpp" />
     <ClInclude Include="include\ImageLoader.hpp" />
     <ClInclude Include="include\Input.hpp" />

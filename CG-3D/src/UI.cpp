@@ -48,15 +48,21 @@ void UI::hierarchyObjectUI(Object* obj, bool isRoot, ImageLoader* imgLoader){
 			if (ImGui::TreeNode("Transform")) {
 				Transform t = obj->getTransform();
 				float worldPositionAsArray[] = { t.worldPosition.x, t.worldPosition.y, t.worldPosition.z };
+				float worldRotationAsArray[] = { t.worldRotation.x, t.worldRotation.y, t.worldRotation.z, t.worldRotation.w };
 				float worldScaleAsArray[] = { t.worldScale.x, t.worldScale.y, t.worldScale.z };
 				bool modifiedTransform = false;
 				ImGui::Text("World Position");
-				if (ImGui::DragFloat3("##WorldPosition", worldPositionAsArray, 0.1, -10, 10)) {
+				if (ImGui::DragFloat3("##WorldPosition", worldPositionAsArray, 0.1f, -10, 10)) {
 					t.worldPosition = glm::vec3(worldPositionAsArray[0], worldPositionAsArray[1], worldPositionAsArray[2]);
 					modifiedTransform = true;
 				}
+				ImGui::Text("World Rotation");
+				if (ImGui::DragFloat4("##WorldRotation", worldRotationAsArray, 0.1f, -1, 1)) {
+					t.worldRotation = glm::quat(worldRotationAsArray[3], worldRotationAsArray[0], worldRotationAsArray[1], worldRotationAsArray[2]);
+					modifiedTransform = true;
+				}
 				ImGui::Text("World Scale");
-				if (ImGui::DragFloat3("##WorldScale", worldScaleAsArray, 0.1, -10, 10)) {
+				if (ImGui::DragFloat3("##WorldScale", worldScaleAsArray, 0.1f, -10, 10)) {
 					t.worldScale = glm::vec3(worldScaleAsArray[0], worldScaleAsArray[1], worldScaleAsArray[2]);
 					modifiedTransform = true;
 				}
@@ -91,6 +97,18 @@ void UI::hierarchyObjectUI(Object* obj, bool isRoot, ImageLoader* imgLoader){
 				ImGui::Text("Specular color");
 				if (ImGui::ColorEdit4("##SpecularColor", specularColorAsArray, 0)) {
 					m.specularColor = glm::vec4(specularColorAsArray[0], specularColorAsArray[1], specularColorAsArray[2], specularColorAsArray[3]);
+					modifiedMaterial = true;
+				}
+				ImGui::Text("Shininess");
+				int shininess = m.shininess;
+				if (ImGui::SliderInt("##Shininess", &shininess, 1, 1000)) {
+					m.shininess = shininess;
+					modifiedMaterial = true;
+				}
+				ImGui::Text("Reflectivity");
+				float reflectivity = m.reflectivity;
+				if (ImGui::SliderFloat("##Reflectivity", &reflectivity, 0, 1)) {
+					m.reflectivity = reflectivity;
 					modifiedMaterial = true;
 				}
 				
@@ -156,6 +174,7 @@ const char* UI::MaterialTypeToCString(Material::MaterialType type) {
 	case Material::UNLIT: return "Unlit";
 	case Material::UNLIT_TEXTURE: return "Unlit texture";
 	case Material::UNLIT_CUBEMAP: return "Unlit cubemap";
+	case Material::UNLIT_WIREFRAME: return "Unlit wireframe";
 	case Material::GOURAD: return "Gourad";
 	case Material::PHONG: return "Phong";
 	case Material::BLINN_PHONG: return "Blinn-Phong";
@@ -173,7 +192,7 @@ void UI::hierarchyLightUI(LightManager* lightMan) {
 			float positionAsArray[] = { light.position.x, light.position.y, light.position.z };
 			float colorAsArray[] = { light.color.r, light.color.g, light.color.b, light.color.a };
 			bool modified = false;
-			if (ImGui::DragFloat3("Position", positionAsArray, 0.1)) {
+			if (ImGui::DragFloat3("Position", positionAsArray, 0.1f)) {
 				light.position = glm::vec3(positionAsArray[0], positionAsArray[1], positionAsArray[2]);
 				modified = true;
 			}

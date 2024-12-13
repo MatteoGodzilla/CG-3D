@@ -173,6 +173,9 @@
     <ClInclude Include="include\Texture.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="include\CollisionManagerInput.hpp">
+      <Filter>Headers\Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\BlinnPhong.frag">

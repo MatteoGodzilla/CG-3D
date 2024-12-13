@@ -21,7 +21,7 @@ public:
 	
 	glm::vec3 worldPosition;
 private:
-	static enum CameraMode {
+	enum CameraMode {
 		FPS,TRACKBALL
 	};
 	CameraMode mode;

@@ -46,6 +46,12 @@ void MeshRenderer::render() {
 		return;
 
 	material->bind();
+	if (material->type == Material::UNLIT_WIREFRAME) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	else {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
 	glBindVertexArray(VAO);
 	glDrawElements(renderMode, mesh->indices.size(), GL_UNSIGNED_INT, 0);
 }

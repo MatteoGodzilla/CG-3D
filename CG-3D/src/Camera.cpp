@@ -1,17 +1,17 @@
 #include "Camera.hpp"
 
 Camera::Camera() 
-    :worldPosition(glm::vec3(0,0,10)), collision(CollisionSphere(worldPosition, collisionRadius))
+    :worldPosition(glm::vec3(0,1,8)), collision(CollisionSphere(worldPosition, collisionRadius))
 {
     yaw = -glm::half_pi<float>();
     pitch = 0;
-    mode = FPS;
+    mode = TRACKBALL;
     trackBallin = false;
     aspect = 1;
     lastMousePos = glm::vec2(0, 0);
     selectionPosition = worldPosition;
     selectionDirection = glm::vec3(0, 0, -1);
-
+    dragStart = glm::vec2(0, 0);
 }
 
 void Camera::keyboardEvent(GLFWwindow* window, int key, int scancode, int action, int mods) {  
@@ -84,7 +84,7 @@ void Camera::mouseButtonEvent(GLFWwindow* window, int button, int action, int mo
 
 void Camera::mousePosEvent(GLFWwindow* window, double xpos, double ypos) {
     glm::vec2 now = glm::vec2(xpos, ypos);
-    float epsilon = 0.0001;
+    float epsilon = 0.0001f;
     if (mode == FPS) {
         glm::vec2 delta = now - lastMousePos;
 

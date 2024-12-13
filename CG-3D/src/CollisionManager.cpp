@@ -3,6 +3,7 @@
 CollisionManager::CollisionManager(Camera* camera) {
 	this->camera = camera;
 	objects = std::vector<Object*>();
+	showCollisionBoxes = false;
 }
 
 void CollisionManager::addObject(Object* object) {
@@ -62,7 +63,9 @@ Object* CollisionManager::getSelectedObject() {
 }
 
 void CollisionManager::renderCollisions(Camera* cam) {
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	if (!showCollisionBoxes)
+		return;
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	for (auto* object : objects) {
 		Object* o = ObjectConstructor::createUnitCube();
 		auto bounds = object->getCollision().getBounds();
@@ -74,14 +77,14 @@ void CollisionManager::renderCollisions(Camera* cam) {
 		t.worldScale = glm::vec3(scale.x, scale.y, scale.z);
 		o->setTransformAll(t);
 
-		Material m = Material(Material::UNLIT);
+		Material m = Material(Material::UNLIT_WIREFRAME);
 		m.baseColor = glm::vec4(1, 1, 1, 1);
 		o->setMaterialAll(m);
 
 		o->render(cam);
 		delete o;
 	}
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	auto ray = cam->getSelectionRay();
 	Object* o = ObjectConstructor::createRay(ray.first, ray.second);
 	o->render(cam);

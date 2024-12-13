@@ -9,7 +9,11 @@ class ImageLoader {
 public:
 	ImageLoader();
 	Texture* getTexture(std::string path);
-	Cubemap* loadCubemap(std::string right, std::string left, std::string top, std::string bottom, std::string front, std::string back);
+	void loadCubemap(std::string right, std::string left, std::string top, std::string bottom, std::string front, std::string back);
+	void setTextureFilter(Texture* t, GLint minFilter, GLint maxFilter);
+	void setTextureWrap(Texture* t, GLint horizontalWrap, GLint verticalWrap);
+
+	Cubemap* getCubemap();
 	std::unordered_map<std::string, Texture*>& getTextures();
 	~ImageLoader();
 private:

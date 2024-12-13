@@ -51,7 +51,7 @@ Object* createObject(aiNode* node, const aiScene* scene) {
 				myMat.specularColor = glm::vec4(specularColor.r, specularColor.g, specularColor.b, specularColor.a);
 			}
 			if (mat->Get(AI_MATKEY_SHININESS, shininess) == aiReturn_SUCCESS) {
-				myMat.shininess = shininess;
+				myMat.shininess = (int)round(shininess);
 			}
 			result->setMaterialAll(myMat);
 		}

@@ -1,7 +1,7 @@
 #include "LightManager.hpp"
 
 LightManager::LightManager(){
-	pointLights[0] = PointLight({0,0,0}, 10, {0,0,1,1});
+	pointLights[0] = PointLight({0,0.5,0}, 10, {0,0,1,1});
 	pointLights[1] = PointLight({0,0,-10}, 10, {1,1,0,1});
 	ambientLightStrength = 1;
 	for (int i = 0; i < LIGHT_COUNT; i++) {

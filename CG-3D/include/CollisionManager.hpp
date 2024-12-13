@@ -17,6 +17,7 @@ public:
 	void renderCollisions(Camera* cam);
 
 	Object* getSelectedObject();
+	bool showCollisionBoxes;
 private:
 	std::vector<Object*> objects;
 	Camera* camera;

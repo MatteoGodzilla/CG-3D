@@ -23,7 +23,8 @@ Material::Material(MaterialType type) {
 	ambientColor = glm::vec4(0, 0, 0, 1);
 	diffuseColor = glm::vec4(0, 0, 0, 1);
 	specularColor = glm::vec4(0, 0, 0, 1);
-	shininess = 1;
+	shininess = 100;
+	reflectivity = 0.5;
 	texture = nullptr;
 	cubemap = nullptr;
 }
@@ -50,14 +51,18 @@ void Material::updateUniforms(Transform t, Camera* c) {
 		glUniform4f(glGetUniformLocation(id, "baseColor"), baseColor.r, baseColor.g, baseColor.b, baseColor.a);
 		break;
 	case UNLIT:
+	case UNLIT_WIREFRAME:
 		glUniform4f(glGetUniformLocation(id, "baseColor"), baseColor.r, baseColor.g, baseColor.b, baseColor.a);
 		break;
 	case GOURAD:
 	case PHONG:
 	case BLINN_PHONG:
+		if (cubemap != nullptr) glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap->cubemapId);
 		glUniform4f(glGetUniformLocation(id, "ambientColor"), ambientColor.r, ambientColor.g, ambientColor.b, ambientColor.a);
 		glUniform4f(glGetUniformLocation(id, "diffuseColor"), diffuseColor.r, diffuseColor.g, diffuseColor.b, diffuseColor.a);
 		glUniform4f(glGetUniformLocation(id, "specularColor"), specularColor.r, specularColor.g, specularColor.b, specularColor.a);
+		glUniform1i(glGetUniformLocation(id, "shininess"), shininess);
+		glUniform1f(glGetUniformLocation(id, "reflectivity"), reflectivity);
 		glUniform3f(glGetUniformLocation(id, "cameraWorldPos"), c->worldPosition.x, c->worldPosition.y, c->worldPosition.z);
 		break;
 	}
@@ -65,7 +70,8 @@ void Material::updateUniforms(Transform t, Camera* c) {
 
 GLuint Material::matTypeToId(MaterialType type) {
 	switch (type) {
-	case Material::UNLIT: 
+	case Material::UNLIT:
+	case Material::UNLIT_WIREFRAME:
 		return unlitShaderId;
 	case Material::GOURAD: 
 		return gouradShaderId;

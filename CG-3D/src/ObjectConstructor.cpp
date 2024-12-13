@@ -37,7 +37,7 @@ Object* ObjectConstructor::createLightObject(glm::vec3 worldPosition, glm::vec4 
 
 	Transform lightTransform = Transform();
 	lightTransform.worldPosition = worldPosition;
-	lightTransform.worldScale = glm::vec3(0.1);
+	lightTransform.worldScale = glm::vec3(0.1f);
 	light->setTransformAll(lightTransform);
 
 	Material lightMaterial = Material(Material::UNLIT);
@@ -205,52 +205,6 @@ Object* ObjectConstructor::createUnitPyramid() {
 	t.worldRotation = glm::rotate(t.worldRotation, glm::quarter_pi<float>(), glm::vec3(0, 1, 0));
 	pyramid->setTransformAll(t);
 	return pyramid;
-	/*
-	Object* result = new Object("Pyramid");
-	auto& vertices = result->getMesh()->vertices;
-	vertices.push_back({ {-0.5,0,0.5} });
-	vertices.push_back({ {0.5,0,0.5} });
-	vertices.push_back({ {0.5,0,-0.5} });
-	vertices.push_back({ {-0.5,0,-0.5} });
-	vertices.push_back({ {0,1,0} });
-
-	auto& indices = result->getMesh()->indices;
-	//bottom face
-	indices.push_back(0);
-	indices.push_back(1);
-	indices.push_back(2);
-
-	indices.push_back(2);
-	indices.push_back(3);
-	indices.push_back(0);
-
-	//side faces
-
-	indices.push_back(0);
-	indices.push_back(1);
-	indices.push_back(4);
-
-	indices.push_back(1);
-	indices.push_back(2);
-	indices.push_back(4);
-
-	indices.push_back(2);
-	indices.push_back(3);
-	indices.push_back(4);
-
-	indices.push_back(3);
-	indices.push_back(0);
-	indices.push_back(4);
-
-	result->updateMeshRenderer();
-	result->updateCollisionBox();
-
-	Material m = Material(Material::UNLIT);
-	m.baseColor = glm::vec4(1, 1, 1, 1);
-	result->setMaterialSelf(m);
-
-	return result;
-	*/
 }
 
 Object* ObjectConstructor::createUnitSphere(int latResolution, int lonResolution) {
@@ -494,6 +448,47 @@ Object* ObjectConstructor::createTorus(float outerRadius, float sliceRadius, int
 	Material m = Material(Material::UNLIT);
 	m.baseColor = glm::vec4(1, 1, 1, 1);
 	result->setMaterialAll(m);
+
+	return result;
+}
+
+Object* ObjectConstructor::createSubdividedPlane(int xResolution, int zResolution) {
+	Object* result = new Object("Plane");
+	auto& vertices = result->getMesh()->vertices;
+
+	//create a unit square that is subdivided this many times in each axis
+	for (int z = 0; z <= zResolution; z++) {
+		for (int x = 0; x <= xResolution; x++) {
+			float xPerc = (float)x / (float)xResolution;
+			float zPerc = (float)z / (float)zResolution;
+
+			vertices.push_back({ {xPerc - 0.5f, 0, zPerc- 0.5f}, {0,1,0}, {xPerc,zPerc}});
+		}
+	}
+
+	auto& indices = result->getMesh()->indices;
+	for (int z = 0; z < zResolution; z++) {
+		for (int x = 0; x < xResolution; x++) {
+			int BLindex = z * (xResolution + 1) + x;
+			int TLindex = (z + 1) * (xResolution + 1) + x;
+			int TRindex = (z + 1) * (xResolution + 1) + x + 1;
+			int BRindex = z * (xResolution + 1) + x + 1;
+
+			indices.push_back(TRindex);
+			indices.push_back(TLindex);
+			indices.push_back(BLindex);
+
+			indices.push_back(BLindex);
+			indices.push_back(BRindex);
+			indices.push_back(TRindex);
+		}
+	}
+	
+	result->updateMeshRenderer();
+
+	Material m = Material(Material::UNLIT);
+	m.baseColor = glm::vec4(0.1, 0.1, 0.1, 1);
+	result->setMaterialSelf(m);
 
 	return result;
 }

@@ -30,8 +30,8 @@ Texture* ImageLoader::loadTexture(std::string path, GLint target) {
 	//these might need to be changed in runtime
 	glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	int storeType = t->channels == 3 ? GL_RGB : GL_RGBA;
 	glTexImage2D(target, 0, GL_RGBA, t->width, t->height, 0, storeType, GL_UNSIGNED_BYTE, data);
@@ -41,7 +41,7 @@ Texture* ImageLoader::loadTexture(std::string path, GLint target) {
 	return t;
 }
 
-Cubemap* ImageLoader::loadCubemap(std::string right, std::string left, std::string top, std::string bottom, std::string front, std::string back) {
+void ImageLoader::loadCubemap(std::string right, std::string left, std::string top, std::string bottom, std::string front, std::string back) {
 	cubemap = Cubemap();
 
 	glGenTextures(1, &cubemap.cubemapId);
@@ -59,6 +59,21 @@ Cubemap* ImageLoader::loadCubemap(std::string right, std::string left, std::stri
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+}
+
+void ImageLoader::setTextureFilter(Texture* t, GLint minFilter, GLint magFilter) {
+	glBindTexture(GL_TEXTURE_2D, t->texId);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter);
+}
+
+void ImageLoader::setTextureWrap(Texture* t, GLint horizontalWrap, GLint verticalWrap) {
+	glBindTexture(GL_TEXTURE_2D, t->texId);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, horizontalWrap);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, verticalWrap);
+}
+
+Cubemap* ImageLoader::getCubemap() {
 	return &cubemap;
 }
 

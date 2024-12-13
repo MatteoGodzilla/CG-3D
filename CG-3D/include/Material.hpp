@@ -12,6 +12,7 @@ public:
 		UNLIT,
 		UNLIT_TEXTURE,
 		UNLIT_CUBEMAP,
+		UNLIT_WIREFRAME,
 		GOURAD,
 		PHONG,
 		BLINN_PHONG,
@@ -31,7 +32,8 @@ public:
 	glm::vec4 ambientColor;
 	glm::vec4 diffuseColor;
 	glm::vec4 specularColor;
-	float shininess;
+	int shininess;
+	float reflectivity;
 	// reference to textures
 	// UNLIT_TEXTURE -> texture != nullptr; UNLIT_CUBEMAP -> cubemap != nullptr; everything else has both nullptr;
 	Texture* texture;
