@@ -1,0 +1,33 @@
+# Blender 4.2.0 MTL File: 'None'
+# www.blender.org
+
+newmtl BOTON__mat
+Ns 20.000006
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd C:/Users/Matteo/Downloads/crocs/textures/Logo2.jpg
+
+newmtl CROCK2_LOW_mat
+Ns 20.000006
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd C:/Users/Public/Pixologic/GoZProjects/Default/CROCK2_LOW_TXTR.tif
+map_Bump -bm 1.000000 C:/Users/Public/Pixologic/GoZProjects/Default/CROCK2_LOW_NM.tif
+
+newmtl Correa_LOW_mat
+Ns 20.000006
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd C:/Users/Public/Pixologic/GoZProjects/Default/Correa_LOW_TXTR.tif

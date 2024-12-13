@@ -1,0 +1,12 @@
+# Blender 4.2.0 MTL File: 'column.blend'
+# www.blender.org
+
+newmtl Material.001
+Ns 617.346924
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:/Users/Matteo/AppData/Local/Temp/e2442494-c381-4739-b116-a5e73135d7ac_column.zip.7ac/marble-2398946.jpg

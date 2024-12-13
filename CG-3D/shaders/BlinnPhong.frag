@@ -9,6 +9,8 @@ out vec4 result;
 uniform vec4 ambientColor;
 uniform vec4 diffuseColor;
 uniform vec4 specularColor;
+uniform int shininess;
+uniform float reflectivity;
 
 //Lighting information (Set up by Light Manager)
 struct PointLight{
@@ -21,6 +23,8 @@ struct PointLight{
 uniform PointLight lights[LIGHT_NUM];
 uniform float ambientLightStrength;
 uniform vec3 cameraWorldPos;
+
+uniform samplerCube cubemap;
 
 void main(){
     //start off with some ambient color by default
@@ -35,8 +39,12 @@ void main(){
         //specular pass
         vec3 halfwayVector = normalize(worldPosToLight + worldPosToCamera);
         //vec3 reflectionVec = normalize(2 * dot(worldPosToLight, adjustedNormal) * adjustedNormal - worldPosToLight);
-        float specularPerc = pow(max(dot(halfwayVector, normalize(adjustedNormal)),0), lights[i].strength);
+        float specularPerc = pow(max(dot(halfwayVector, normalize(adjustedNormal)),0), shininess);
         result += lights[i].color * specularColor * specularPerc;
+
+        //skybox reflections
+        vec3 skyboxDirection = normalize(2 * dot(worldPosToCamera, adjustedNormal) * adjustedNormal - worldPosToCamera);
+        result += reflectivity * texture(cubemap, skyboxDirection);
     }
     result.a = 1;
 }
