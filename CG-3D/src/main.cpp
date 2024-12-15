@@ -1,6 +1,7 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <chrono>
 
 #include "Utils.hpp"
 #include "UI.hpp"
@@ -76,6 +77,7 @@ int main() {
 	Object* scene = new Object("Scene root");
 
 	//Basic plane
+	auto begin = std::chrono::steady_clock::now();
 	Object* plane = ObjectConstructor::createSubdividedPlane(150, 150);
 	Transform planeTransform = Transform();
 	planeTransform.worldPosition = glm::vec3(0, 0, 0);
@@ -180,6 +182,7 @@ int main() {
 	teacup->setTransformAll(teacupTransform);
 	teacup->setMaterialAll(bigTeapotMaterial);
 	scene->addChild(teacup);
+	collManager.addObject(teacup);
 	std::cout << "[Scene] Created " << teacup->name << std::endl;
 
 	//David
@@ -243,7 +246,8 @@ int main() {
 	Object* flipFlop = AssimpConverter::loadObject("objs/flip-flop.obj");
 	flipFlop->name = "Flip flop";
 	Transform flipFlopTransform = Transform();
-	flipFlopTransform.worldPosition = glm::vec3(-10, 2, 0);
+	flipFlopTransform.worldPosition = glm::vec3(10, 5, 5);
+	flipFlopTransform.worldScale = glm::vec3(3,3,3);
 	Material flipFlopMaterial = Material(Material::GOURAD);
 	flipFlopMaterial.baseColor = glm::vec4(0, 0.5, 0, 1);
 	flipFlopMaterial.ambientColor = glm::vec4(0, 0.25, 0, 1);
@@ -252,6 +256,7 @@ int main() {
 	flipFlopMaterial.reflectivity = 0;
 	flipFlop->setMaterialAll(flipFlopMaterial);
 	scene->addChild(flipFlop);
+	//collManager.addObject(flipFlop);
 	std::cout << "[Scene] Created " << flipFlop->name << std::endl;
 
 	//Pig
@@ -272,6 +277,27 @@ int main() {
 	scene->addChild(pig);
 	std::cout << "[Scene] Created " << pig->name << std::endl;
 
+	//a e s t e t h i c
+	Object* aestethic = AssimpConverter::loadObject("objs/aestethic.obj");
+	aestethic->name = "A E S T E T H I C";
+	Transform aestethicTransform = Transform();
+	aestethicTransform.worldPosition = glm::vec3(-10, 5, 0);
+	aestethicTransform.worldRotation = glm::rotate(aestethicTransform.worldRotation, glm::half_pi<float>(), glm::vec3(0, 1, 0));
+	aestethicTransform.worldScale = glm::vec3(5,5,5);
+	aestethic->setTransformAll(aestethicTransform);
+	Material aestethicMaterial = Material(Material::BLINN_PHONG);
+	aestethicMaterial.baseColor = glm::vec4(0, 0, 0, 0);
+	aestethicMaterial.ambientColor = glm::vec4(0, 0, 0, 0);
+	aestethicMaterial.diffuseColor = glm::vec4(0, 0, 0, 0);
+	aestethicMaterial.specularColor = glm::vec4(0, 0, 0, 0);
+	aestethicMaterial.shininess = 1;
+	aestethicMaterial.reflectivity = 0.9;
+	aestethicMaterial.cubemap = imgLoader.getCubemap();
+	aestethic->setMaterialAll(aestethicMaterial);
+	scene->addChild(aestethic);
+	collManager.addObject(aestethic);
+	std::cout << "[Scene] Created " << aestethic->name << std::endl;
+
 	//Skybox
 	Object* skybox = ObjectConstructor::createUnitCube();
 	skybox->name = "Skybox";
@@ -281,6 +307,10 @@ int main() {
 	skybox->setMaterialAll(skyboxM);
 	scene->addChild(skybox);
 	std::cout << "[Scene] Created " << skybox->name << std::endl;
+	auto end = std::chrono::steady_clock::now();
+
+	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
+	std::cout << "[Scene] Created scene in " << (float)duration.count()/1000 << " seconds" << std::endl;
 
 	LightManager lightManager = LightManager();
 
@@ -337,7 +367,6 @@ int main() {
 		pigTransform.worldRotation = glm::rotate(glm::quat(1, 0, 0, 0), glm::half_pi<float>() - pigAngle, glm::vec3(0, 1, 0));
 		pigTransform.worldRotation = glm::rotate(pigTransform.worldRotation, -cos(pigAngle * 1.414f)/5, glm::vec3(0, 0, 1));
 		pig->setTransformAll(pigTransform);
-
 
 		//---PHYSICS---
 

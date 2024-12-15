@@ -32,14 +32,17 @@ void main(){
     for(int i = 0; i < LIGHT_NUM; i++){
         vec3 worldPosToLight = normalize(lights[i].position - worldPos.xyz);
         vec3 worldPosToCamera = normalize(cameraWorldPos - worldPos.xyz);
+
+        float lightDistance = length(lights[i].position - worldPos.xyz);
+        float fAtt = min(1, lights[i].strength/(lightDistance * lightDistance));
         //diffuse pass
         float diffusePerc = max(dot(worldPosToLight, adjustedNormal),0);
-        result += lights[i].color * diffuseColor * diffusePerc;
+        result += fAtt * lights[i].color * diffuseColor * diffusePerc;
 
         //specular pass
         vec3 reflectionVec = normalize(2 * dot(worldPosToLight, adjustedNormal) * adjustedNormal - worldPosToLight);
         float specularPerc = pow(max(dot(reflectionVec, worldPosToCamera),0), shininess);
-        result += lights[i].color * specularColor * specularPerc;
+        result += fAtt * lights[i].color * specularColor * specularPerc;
 
         //skybox reflections
         vec3 skyboxDirection = normalize(2 * dot(worldPosToCamera, adjustedNormal) * adjustedNormal - worldPosToCamera);

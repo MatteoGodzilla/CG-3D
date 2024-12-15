@@ -24,7 +24,7 @@ void UI::hierarchy(double deltaTime, Object* root, LightManager* lightMan, Image
 	hierarchyLightUI(lightMan);
 	ImGui::End();
 
-	ImGui::ShowDemoWindow();	
+	//ImGui::ShowDemoWindow();
 }
 
 void UI::textures(ImageLoader* imgLoader) {
@@ -191,14 +191,21 @@ void UI::hierarchyLightUI(LightManager* lightMan) {
 			PointLight light = lightMan->getLight(i);
 			float positionAsArray[] = { light.position.x, light.position.y, light.position.z };
 			float colorAsArray[] = { light.color.r, light.color.g, light.color.b, light.color.a };
+			float strengthCopy = light.strength;
 			bool modified = false;
-			if (ImGui::DragFloat3("Position", positionAsArray, 0.1f)) {
+			ImGui::Text("Position");
+			if (ImGui::DragFloat3("##Position", positionAsArray, 0.1f)) {
 				light.position = glm::vec3(positionAsArray[0], positionAsArray[1], positionAsArray[2]);
 				modified = true;
 			}
-
-			if (ImGui::ColorEdit4("Color", colorAsArray)) {
+			ImGui::Text("Color");
+			if (ImGui::ColorEdit4("##Color", colorAsArray)) {
 				light.color = glm::vec4(colorAsArray[0], colorAsArray[1], colorAsArray[2], colorAsArray[3]);
+				modified = true;
+			}
+			ImGui::Text("Strength");
+			if (ImGui::DragFloat("##Strength", &strengthCopy, 0.1, 0, 100)) {
+				light.strength = strengthCopy;
 				modified = true;
 			}
 			
