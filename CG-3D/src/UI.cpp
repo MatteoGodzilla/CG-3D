@@ -219,17 +219,119 @@ void UI::hierarchyLightUI(LightManager* lightMan) {
 	}
 }
 
-void UI::selectedObject(Object* selected) {
-	ImGui::SetNextWindowPos(ImVec2(0, ImGui::GetMainViewport()->Size.y),ImGuiCond_Always, ImVec2(0,1));
-	ImGui::Begin("Selected",nullptr, ImGuiWindowFlags_AlwaysAutoResize |
-		ImGuiWindowFlags_NoBackground |
-		ImGuiWindowFlags_NoCollapse | 
-		ImGuiWindowFlags_NoTitleBar
-	);
-	std::string text = "Selected: ";
-	if (selected != nullptr)
-		text += selected->name;
-	ImGui::Text(text.c_str());
+void UI::selectedObject(Object* selected, ImageLoader* imgLoader) {
+	if (selected == nullptr)
+		return;
+	ImGuiViewport* viewport = ImGui::GetMainViewport();
+	ImGui::SetNextWindowPos(ImVec2(viewport->Size.x, 0), ImGuiCond_Always, ImVec2(1, 0));
+	ImGui::Begin("Selected object",nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+	
+	ImGui::Text(("Name: " + selected->name).c_str());
+
+	Transform t = selected->getTransform();
+	float worldPositionAsArray[] = { t.worldPosition.x, t.worldPosition.y, t.worldPosition.z };
+	float worldRotationAsArray[] = { t.worldRotation.x, t.worldRotation.y, t.worldRotation.z, t.worldRotation.w };
+	float worldScaleAsArray[] = { t.worldScale.x, t.worldScale.y, t.worldScale.z };
+	bool modifiedTransform = false;
+	ImGui::Text("World Position");
+	if (ImGui::DragFloat3("##WorldPosition", worldPositionAsArray, 0.1f, -10, 10)) {
+		t.worldPosition = glm::vec3(worldPositionAsArray[0], worldPositionAsArray[1], worldPositionAsArray[2]);
+		modifiedTransform = true;
+	}
+	ImGui::Text("World Rotation");
+	if (ImGui::DragFloat4("##WorldRotation", worldRotationAsArray, 0.1f, -1, 1)) {
+		t.worldRotation = glm::quat(worldRotationAsArray[3], worldRotationAsArray[0], worldRotationAsArray[1], worldRotationAsArray[2]);
+		modifiedTransform = true;
+	}
+	ImGui::Text("World Scale");
+	if (ImGui::DragFloat3("##WorldScale", worldScaleAsArray, 0.1f, -10, 10)) {
+		t.worldScale = glm::vec3(worldScaleAsArray[0], worldScaleAsArray[1], worldScaleAsArray[2]);
+		modifiedTransform = true;
+	}
+	if (modifiedTransform) {
+		selected->setTransformAll(t);
+		selected->updateCollisionBox();
+	}
+
+	ImGui::NewLine();
+
+	Material m = selected->getMaterial();
+	float baseColorAsArray[] = { m.baseColor.r, m.baseColor.g, m.baseColor.b, m.baseColor.a };
+	float ambientColorAsArray[] = { m.ambientColor.r, m.ambientColor.g, m.ambientColor.b, m.ambientColor.a };
+	float diffuseColorAsArray[] = { m.diffuseColor.r, m.diffuseColor.g, m.diffuseColor.b, m.diffuseColor.a };
+	float specularColorAsArray[] = { m.specularColor.r, m.specularColor.g, m.specularColor.b, m.specularColor.a };
+	bool modifiedMaterial = false;
+	ImGui::Text("Base color");
+	if (ImGui::ColorEdit4("##BaseColor", baseColorAsArray, 0)) {
+		m.baseColor = glm::vec4(baseColorAsArray[0], baseColorAsArray[1], baseColorAsArray[2], baseColorAsArray[3]);
+		modifiedMaterial = true;
+	}
+	ImGui::Text("Ambient color");
+	if (ImGui::ColorEdit4("##AmbientColor", ambientColorAsArray, 0)) {
+		m.ambientColor = glm::vec4(ambientColorAsArray[0], ambientColorAsArray[1], ambientColorAsArray[2], ambientColorAsArray[3]);
+		modifiedMaterial = true;
+	}
+	ImGui::Text("Diffuse color");
+	if (ImGui::ColorEdit4("##DiffuseColor", diffuseColorAsArray, 0)) {
+		m.diffuseColor = glm::vec4(diffuseColorAsArray[0], diffuseColorAsArray[1], diffuseColorAsArray[2], diffuseColorAsArray[3]);
+		modifiedMaterial = true;
+	}
+	ImGui::Text("Specular color");
+	if (ImGui::ColorEdit4("##SpecularColor", specularColorAsArray, 0)) {
+		m.specularColor = glm::vec4(specularColorAsArray[0], specularColorAsArray[1], specularColorAsArray[2], specularColorAsArray[3]);
+		modifiedMaterial = true;
+	}
+	ImGui::Text("Shininess");
+	int shininess = m.shininess;
+	if (ImGui::SliderInt("##Shininess", &shininess, 1, 1000)) {
+		m.shininess = shininess;
+		modifiedMaterial = true;
+	}
+	ImGui::Text("Reflectivity");
+	float reflectivity = m.reflectivity;
+	if (ImGui::SliderFloat("##Reflectivity", &reflectivity, 0, 1)) {
+		m.reflectivity = reflectivity;
+		modifiedMaterial = true;
+	}
+
+	ImGui::Text("Material type");
+	if (ImGui::BeginCombo("##Material Type", MaterialTypeToCString(m.type))) {
+		for (int i = 0; i < Material::MAT_TYPE_COUNT; i++) {
+			bool isSelected = (i == m.type);
+			if (ImGui::Selectable(MaterialTypeToCString((Material::MaterialType)i), &isSelected)) {
+				m.type = ((Material::MaterialType)i);
+				modifiedMaterial = true;
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	if (m.texture != nullptr) {
+		if (ImGui::ImageButton("##Texture", m.texture->texId, ImVec2(60, 60))) {
+			ImGui::OpenPopup("TexMex");
+		}
+	}
+	else {
+		if (ImGui::Button("Assign Texture")) {
+			ImGui::OpenPopup("TexMex");
+		}
+	}
+	if (ImGui::BeginPopup("TexMex")) {
+		for (auto& pair : imgLoader->getTextures()) {
+			if (ImGui::ImageButton(pair.first.c_str(), pair.second->texId, ImVec2(60, 60))) {
+				m.texture = pair.second;
+				modifiedMaterial = true;
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::SameLine();
+		}
+		ImGui::EndPopup();
+	}
+
+	if (modifiedMaterial) {
+		selected->setMaterialAll(m);
+	}
+
 	ImGui::End();
 }
 

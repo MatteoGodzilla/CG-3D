@@ -14,7 +14,7 @@ public:
 	void begin();
 	void hierarchy(double deltaTime, Object* root, LightManager* lightMan, ImageLoader* imgLoader);
 	void textures(ImageLoader* textures);
-	void selectedObject(Object* selected);
+	void selectedObject(Object* selected, ImageLoader* textures);
 	void end();
 private:
 	void hierarchyObjectUI(Object* obj, bool isRoot, ImageLoader* imgLoader);

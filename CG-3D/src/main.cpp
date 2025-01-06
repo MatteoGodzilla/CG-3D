@@ -91,6 +91,7 @@ int main() {
 	collManager.addObject(plane);
 	std::cout << "[Scene] Created " << plane->name << std::endl;
 
+	
 	//Red teapot
 	Object* teapot = AssimpConverter::loadObject("objs/teapot.obj");
 	teapot->name = "Teapot 1";
@@ -151,6 +152,7 @@ int main() {
 	scene->addChild(teapot3);
 	std::cout << "[Scene] Created " << teapot3->name << std::endl;
 
+	/*
 	//Big teapot 
 	Object* bigTeapot = AssimpConverter::loadObject("objs/teapot.obj");
 	bigTeapot->name = "Big teapot";
@@ -248,6 +250,7 @@ int main() {
 	Transform flipFlopTransform = Transform();
 	flipFlopTransform.worldPosition = glm::vec3(10, 5, 5);
 	flipFlopTransform.worldScale = glm::vec3(3,3,3);
+	flipFlop->setTransformAll(flipFlopTransform);
 	Material flipFlopMaterial = Material(Material::GOURAD);
 	flipFlopMaterial.baseColor = glm::vec4(0, 0.5, 0, 1);
 	flipFlopMaterial.ambientColor = glm::vec4(0, 0.25, 0, 1);
@@ -307,6 +310,7 @@ int main() {
 	skybox->setMaterialAll(skyboxM);
 	scene->addChild(skybox);
 	std::cout << "[Scene] Created " << skybox->name << std::endl;
+	*/
 	auto end = std::chrono::steady_clock::now();
 
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
@@ -318,14 +322,14 @@ int main() {
 	//---END GAME OBJECTS---
 
 	//---ANIMATION VALUES---
-	glm::vec3 bigTeapotCenter = bigTeapotTransform.worldPosition;
-	glm::vec3 teacupCenter = teacupTransform.worldPosition;
-	glm::vec3 bigDisplacement = glm::vec3(0, 1, 0);
-	glm::vec3 smallDisplacement = glm::vec3(0, 0.25, 0);
+	//glm::vec3 bigTeapotCenter = bigTeapotTransform.worldPosition;
+	//glm::vec3 teacupCenter = teacupTransform.worldPosition;
+	//glm::vec3 bigDisplacement = glm::vec3(0, 1, 0);
+	//glm::vec3 smallDisplacement = glm::vec3(0, 0.25, 0);
 
-	glm::vec3 pigCenter = pigTransform.worldPosition;
-	float pigHorizontalRadius = 20;
-	float pigVerticalRadius = 5;
+	//glm::vec3 pigCenter = pigTransform.worldPosition;
+	//float pigHorizontalRadius = 20;
+	//float pigVerticalRadius = 5;
 
 	//Setup Opengl flags
 	glEnable(GL_BLEND);
@@ -349,6 +353,7 @@ int main() {
 
 		//---ANIMATIONS---
 
+		/*
 		bigTeapotTransform.worldPosition = bigTeapotCenter + (float)sin(nowFrame) * bigDisplacement;
 		bigTeapot->setTransformAll(bigTeapotTransform);
 
@@ -367,6 +372,7 @@ int main() {
 		pigTransform.worldRotation = glm::rotate(glm::quat(1, 0, 0, 0), glm::half_pi<float>() - pigAngle, glm::vec3(0, 1, 0));
 		pigTransform.worldRotation = glm::rotate(pigTransform.worldRotation, -cos(pigAngle * 1.414f)/5, glm::vec3(0, 0, 1));
 		pig->setTransformAll(pigTransform);
+		*/
 
 		//---PHYSICS---
 
@@ -391,7 +397,7 @@ int main() {
 		gui.begin();
 		gui.hierarchy(deltaTime, scene, &lightManager, &imgLoader);
 		gui.textures(&imgLoader);
-		gui.selectedObject(selected);
+		gui.selectedObject(selected, &imgLoader);
 		gui.end();
 
 		glfwSwapBuffers(window);
